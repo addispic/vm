@@ -40,7 +40,6 @@ const userRegister = async (req, res) => {
 const userLogin = async (req, res) => {
   try {
     const { username, password } = req.body;
-
     if (!username?.trim()) {
       throw new Error("username required");
     }
@@ -87,7 +86,7 @@ const userLogin = async (req, res) => {
 const userLogout = (req,res) => {
     try{
         res.cookie('token',"",{maxAge: 1});
-        return res.status(200).json({message: 'user logged out',_id: 'user_id_from_middleware'})
+        return res.status(200).json({message: 'user logged out',})
     }catch(err){
         return res.status(400).json({error: 'user logout failed'})
     }
@@ -95,7 +94,7 @@ const userLogout = (req,res) => {
 
 // auth checker
 const authChecker = (req, res) => {
-  return res.status(200).json({ message: "AUTH CHECKER" });
+  return res.status(200).json({ user: req.user });
 };
 
 // exports

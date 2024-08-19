@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require('express');
+const cookieParser = require('cookie-parser');
 
 // socket
 const { server,app } = require("./api/socket/socket");
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5050
 // settings
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(cookieParser())
 
 // routes
 // users

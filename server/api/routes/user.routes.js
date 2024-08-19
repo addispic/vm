@@ -10,6 +10,10 @@ const {
     authChecker,
 } = require('../controllers/user.controllers')
 
+// middlewares
+// auth middleware
+const {privateRoute} = require('../middlewares/auth.middleware')
+
 // router
 const router = Router();
 
@@ -26,7 +30,7 @@ router.post('/login',userLogin)
 router.get('/logout',userLogout)
 
 // auth checker
-router.get('/auth-checker',authChecker)
+router.get('/auth-checker',privateRoute,authChecker)
 
 // exports
 module.exports = router;
