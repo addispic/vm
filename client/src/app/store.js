@@ -7,6 +7,6 @@ import usersReducer from "../features/users/users.slice";
 export const store = configureStore({
   reducer: {
     // users reducer
-    users: usersReducer,
+    user: usersReducer,
   },
 });

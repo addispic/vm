@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import { NavLink,useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
 
 // icons
 // chat
@@ -9,7 +10,23 @@ import { PiEyeSlashThin } from "react-icons/pi";
 // show
 import { PiEyeThin } from "react-icons/pi";
 
+// slices
+// user slice
+import {login,userSelector,errorsSelector,isFormSubmittingSelector} from '../../../features/users/users.slice'
+
 const Login = () => {
+  // navigate
+  const navigate = useNavigate();
+  // states from slice
+  // user slice
+  // is form submitting
+  const isFormSubmitting = useSelector(isFormSubmittingSelector)
+  // user
+  const user = useSelector(userSelector);
+  // errors
+  const errors = useSelector(errorsSelector)
+  // dispatch
+  const dispatch = useDispatch();
   // states
   // border decorator
   const [borderDecorator, setBorderDecorator] = useState("");
@@ -43,10 +60,27 @@ const Login = () => {
     }
 
     // submitting
-    if (username?.trim() && password?.length > 3) {
-      console.log({ username, password });
+    if (username?.trim() && password?.length >= 3) {
+      dispatch(login({ username, password }))
     }
   };
+
+  // use effect
+  useEffect(()=>{
+    if(user){
+      navigate("/")
+    }
+    if(errors?.password){
+      setPasswordError(errors?.password)
+    }
+    if(errors?.username){
+      setUsernameError(errors?.username)
+    }
+  },[user,errors])
+
+  if(isFormSubmitting){
+    return <div>Loading ...</div>
+  }
   return (
     <div>
       {/* header */}
@@ -150,6 +184,11 @@ const Login = () => {
           <div className="text-xs text-red-600 overflow-hidden h-[16px]">
             <span>{passwordError}</span>
           </div>
+        </div>
+
+        {/* forget password link */}
+        <div className="my-3 flex items-center justify-end">
+          <NavLink to={'/user/forget-password'} className={'text-xs text-green-500 italic font-semibold hover:underline'}>Forget Password</NavLink>
         </div>
 
         {/* login button */}

@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* webkit scroll bar */
+::-webkit-scrollbar {
+    width: 0;
+    display: none;
+}
+
+/* container max width */
+.container-max-width {
+    @apply max-w-[1500px] mx-auto px-[3%]
+}

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import { NavLink,useNavigate } from "react-router-dom";
+import {useDispatch,useSelector} from 'react-redux'
 
 // icons
 // chat
@@ -9,7 +10,24 @@ import { PiEyeSlashThin } from "react-icons/pi";
 // show
 import { PiEyeThin } from "react-icons/pi";
 
+// slices
+// user slice
+import {register,isFormSubmittingSelector,errorsSelector,userSelector} from '../../../features/users/users.slice'
+
 const Register = () => {
+  // states from slice
+  // users slice
+  // is form submitting
+  const isFormSubmitting = useSelector(isFormSubmittingSelector)
+  // errors
+  const errors = useSelector(errorsSelector);
+  // user
+  const user = useSelector(userSelector)
+
+  // dispatches
+  const dispatch = useDispatch();
+  // navigate
+  const navigate = useNavigate();
   // states
   // border decorator
   const [borderDecorator, setBorderDecorator] = useState("");
@@ -74,9 +92,29 @@ const Register = () => {
 
     // submitting
     if(username?.trim() && email?.trim() && emailValidator(email) && password && password === confirmPassword){
-        console.log({username,email,password})
+        dispatch(register({username,email,password}))
     }
   };
+
+  // effects
+  useEffect(()=>{
+    if(user){
+      navigate("/")
+    }
+    if(errors?.username){
+      setUsernameError(errors?.username)
+    }
+    if(errors?.email){
+      setEmailError(errors?.email)
+    }
+    if(errors?.password){
+      setPasswordError(errors?.password)
+    }
+  },[errors,user])
+
+  if(isFormSubmitting){
+    return <div>Registering...</div>
+  }
 
 
   return (
@@ -224,7 +262,7 @@ const Register = () => {
           {/* input */}
           <div
             className={`p-2 border rounded-sm flex items-center gap-x-1.5 ${confirmPassword && !confirmPasswordError ? "border-green-500" : ""} ${confirmPasswordError ? "border-red-400" : ""} ${
-              borderDecorator ? "border-green-500" : "border-gray-200"
+              borderDecorator === "confirm-password" ? "border-green-500" : "border-gray-200"
             }`}
           >
             <input

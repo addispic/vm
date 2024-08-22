@@ -8,8 +8,13 @@ const User = require("../models/user.schema");
 const { MAX_AGE, errorHandler, generateToken } = require("../utils/user.utils");
 
 // get all users
-const getAllUsers = (req, res) => {
-  return res.status(200).json({ message: "GET ALL USERS" });
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select({_id: 1,username: 1,email: 1});
+    return res.status(200).json({users})
+  } catch (err) {
+    return res.status(400).json({error: 'get all users failed'});
+  }
 };
 
 // register

@@ -13,9 +13,9 @@ const User = () => {
   return (
     <div className="w-full h-full pt-10">
       <div className="max-w-[950px] mx-auto px-[3%]">
-        <div className="flex h-[534px]">
+        <div className="flex">
           {/* image */}
-          <div className="w-[0] overflow-hidden md:w-[50%] transition-all ease-in-out duration-150 bg-green-500 md:p-7">
+          <div className="w-[0] h-0 md:h-auto overflow-hidden md:w-[50%] transition-all ease-in-out duration-150 bg-green-500 md:p-7">
             {/* header */}
             <header className="flex items-center justify-between">
               {/* site-logo */}
