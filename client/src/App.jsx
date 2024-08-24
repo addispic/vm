@@ -50,23 +50,29 @@ const App = () => {
       {/* header */}
       {location?.pathname?.split("/")[1] !== "user" && <Header />}
       {/* routes */}
-      <div className="h-[93vh] overflow-y-auto">
-        <Routes>
-          {/* home */}
-          <Route path="/" element={<Home />}></Route>
-          {/* user */}
-          <Route path="/user" element={<User />}>
-            <Route index element={<PagesNotFound />}></Route>
-            <Route path="/user/login" element={<Login />}></Route>
-            <Route path="/user/register" element={<Register />}></Route>
-            <Route
-              path="/user/forget-password"
-              element={<ForgetPassword />}
-            ></Route>
-          </Route>
-          {/* no pages found */}
-          <Route path="*" element={<PagesNotFound />}></Route>
-        </Routes>
+      <div className="h-[93vh] overflow-y-auto flex gap-x-5">
+        {/* left side nav */}
+        <div className="min-w-[20%] h-full bg-red-100">left side nav</div>
+        <div className="flex-grow">
+          <Routes>
+            {/* home */}
+            <Route path="/" element={<Home />}></Route>
+            {/* user */}
+            <Route path="/user" element={<User />}>
+              <Route index element={<PagesNotFound />}></Route>
+              <Route path="/user/login" element={<Login />}></Route>
+              <Route path="/user/register" element={<Register />}></Route>
+              <Route
+                path="/user/forget-password"
+                element={<ForgetPassword />}
+              ></Route>
+            </Route>
+            {/* no pages found */}
+            <Route path="*" element={<PagesNotFound />}></Route>
+          </Routes>
+        </div>
+        {/* right side components */}
+        <div className="min-w-[30%] h-full bg-gray-100">right side nav</div>
       </div>
     </div>
   );
