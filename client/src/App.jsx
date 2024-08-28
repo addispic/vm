@@ -25,6 +25,8 @@ import PagesNotFound from "./pages/PagesNotFound";
 // slices
 // user
 import { getAllUsers, addNewUser } from "./features/users/users.slice";
+// posts
+import {getAllPosts,addNewPostEvent} from './features/posts/posts.slice'
 
 const App = () => {
   // dispatch
@@ -45,6 +47,18 @@ const App = () => {
       }
     });
   }, []);
+
+  // get all posts
+  useEffect(()=>{
+    dispatch(getAllPosts())
+  },[])
+
+  // new post
+  useEffect(()=>{
+    SOCKET.on('addNewPostEvent',data=>{
+      dispatch(addNewPostEvent(data))
+    })
+  },[])
   return (
     <div className="w-screen h-screen overflow-x-hidden">
       {/* header */}
@@ -52,7 +66,8 @@ const App = () => {
       {/* routes */}
       <div className="h-[93vh] overflow-y-auto flex gap-x-5">
         {/* left side nav */}
-        <div className="min-w-[20%] h-full bg-red-100">left side nav</div>
+        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full bg-red-100">left side nav</div>}
+        
         <div className="flex-grow">
           <Routes>
             {/* home */}
@@ -72,7 +87,8 @@ const App = () => {
           </Routes>
         </div>
         {/* right side components */}
-        <div className="min-w-[30%] h-full bg-gray-100">right side nav</div>
+        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[30%] h-full bg-gray-100">right side nav</div>}
+        
       </div>
     </div>
   );

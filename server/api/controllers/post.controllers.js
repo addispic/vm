@@ -20,6 +20,7 @@ const addNewPost = async (req,res) => {
         const newPost = await Post.create({userId,text})
         return res.status(200).json({newPost})
     }catch(err){
+        console.log(err)
         return res.status(400).json({error: 'add new post error'})
     }
 }

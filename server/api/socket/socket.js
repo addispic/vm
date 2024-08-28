@@ -22,6 +22,12 @@ io.on('connection',socket=>{
     // send new user
     io.emit("emitNewUser",data)
   })
+
+  // post
+  // add new post
+  socket.on('addNewPost',data=>{
+    io.emit('addNewPostEvent',data)
+  })
 })
 
 module.exports = {
