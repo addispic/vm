@@ -3,13 +3,14 @@ import axios from "axios";
 
 // config
 // socket
-import {SOCKET} from '../../config';
+import { SOCKET } from "../../config";
 
 // initial state
 const initialState = {
   posts: null,
   isPostLoading: false,
   isNewPostUploading: false,
+  isPostDeleting: false,
 };
 
 // get all posts
@@ -31,14 +32,31 @@ export const addNewPost = createAsyncThunk("posts/addNewPost", async (data) => {
     return err.response.data;
   }
 });
+
+// delete post
+export const deletePost = createAsyncThunk("posts/deletePost", async (_id) => {
+  try {
+    const response = await axios.delete(`/api/post/delete-post/${_id}`);
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
+});
+
 // slice
 const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
     // add new post
-    addNewPostEvent: (state,action) => {
-      state.posts?.unshift(action?.payload)
+    addNewPostEvent: (state, action) => {
+      state.posts?.unshift(action?.payload);
+    },
+    // delete post
+    deletePostEvent: (state, action) => {
+      state.posts = state.posts.filter(
+        (postItem) => postItem?._id !== action.payload
+      );
     },
   },
   extraReducers: (builder) => {
@@ -71,25 +89,42 @@ const postsSlice = createSlice({
       // fulfilled
       .addCase(addNewPost.fulfilled, (state, action) => {
         state.isNewPostUploading = false;
-        if(action.payload?.newPost){
-          SOCKET.emit('addNewPost',action.payload?.newPost)
+        if (action.payload?.newPost) {
+          SOCKET.emit("addNewPost", action.payload?.newPost);
         }
       })
       // rejected
       .addCase(addNewPost.rejected, (state) => {
         state.isNewPostUploading = false;
         console.log("ADD-NEW-POST-REJECTED");
+      })
+      // delete post
+      // pending case
+      .addCase(deletePost.pending, (state) => {
+        state.isPostDeleting = true;
+      })
+      // fulfilled
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.isPostDeleting = false;
+        if (action.payload?._id) {
+          SOCKET.emit("deletePost", action.payload?._id);
+        }
+      })
+      // rejected
+      .addCase(deletePost.rejected, (state) => {
+        state.isPostDeleting = false;
+        console.log("DELETE-POST-REJECTED");
       });
   },
 });
 
 // actions
-export const {
-  addNewPostEvent,
-} = postsSlice.actions
+export const { addNewPostEvent, deletePostEvent } = postsSlice.actions;
 // selectors
 // posts selector
 export const postsSelector = (state) => state.posts.posts;
+// is post deleting
+export const isPostDeletingSelector = (state) => state.posts.isPostDeleting;
 
 // exports
 export default postsSlice.reducer;

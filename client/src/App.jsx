@@ -26,7 +26,7 @@ import PagesNotFound from "./pages/PagesNotFound";
 // user
 import { getAllUsers, addNewUser } from "./features/users/users.slice";
 // posts
-import {getAllPosts,addNewPostEvent} from './features/posts/posts.slice'
+import {getAllPosts,addNewPostEvent, deletePostEvent} from './features/posts/posts.slice'
 
 const App = () => {
   // dispatch
@@ -59,6 +59,15 @@ const App = () => {
       dispatch(addNewPostEvent(data))
     })
   },[])
+
+  // delete post
+  useEffect(()=>{
+    SOCKET.on('deletePostEvent', _id => {
+      dispatch(deletePostEvent(_id))
+    })
+  },[])
+
+  
   return (
     <div className="w-screen h-screen overflow-x-hidden">
       {/* header */}

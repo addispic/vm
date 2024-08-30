@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 
@@ -35,7 +35,7 @@ import Username from "../user/user-sub-pages/Username";
 
 // slices
 // posts
-import { postsSelector, addNewPost } from "../../features/posts/posts.slice";
+import { postsSelector, addNewPost,deletePost, isPostDeletingSelector } from "../../features/posts/posts.slice";
 // users
 import { userSelector } from "../../features/users/users.slice";
 
@@ -45,6 +45,8 @@ const Home = () => {
   const user = useSelector(userSelector);
   // posts
   const posts = useSelector(postsSelector);
+  // is  post deleting
+  const isPostDeleting = useSelector(isPostDeletingSelector)
 
   // local states
   const [text, setText] = useState("");
@@ -97,6 +99,13 @@ const Home = () => {
     setText("");
   };
 
+  // hide the pop up after deleting
+  useEffect(()=>{
+    setIsDeletePost(null)
+  },[posts])
+
+  
+
   return (
     <div className="h-[93vh] flex flex-col">
       {/* post content */}
@@ -112,11 +121,21 @@ const Home = () => {
                 <div
                   key={postItem?._id}
                   className="mb-5 bg-white shadow-lg p-3 relative"
+                  onClick={(e)=>{
+                    e.stopPropagation()
+                    setPostMore(prev => {
+                      return {
+                        ...prev,
+                        selectedId: null,
+                      }
+                    })
+                  }}
                 >
                   {/* more option */}
                   {user ? (
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setPostMore((prev) => {
                           return {
                             ...prev,
@@ -147,7 +166,8 @@ const Home = () => {
                             {(postMoreItem?.text === "delete" ||
                               postMoreItem?.text === "edit") &&
                             user?._id === postItem?.userId ? (
-                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100" onClick={()=>{
+                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100" onClick={(e)=>{
+                                e.stopPropagation()
                                 if(postMoreItem?.text === "delete"){
                                   setIsDeletePost(postItem)
                                   setPostMore(prev => {
@@ -168,7 +188,9 @@ const Home = () => {
                             ) : (postMoreItem?.text === "share" ||
                                 postMoreItem?.text === "favorite") &&
                               user?._id !== postItem?.userId ? (
-                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100">
+                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100" onClick={(e)=>{
+                                e.stopPropagation()
+                              }}>
                                 {/* icon */}
                                 <postMoreItem.icon className="text-green-500" />
                                 {/* text */}
@@ -292,6 +314,14 @@ const Home = () => {
       <div className={`fixed left-0 top-0 w-screen h-screen bg-black/35 z-50 ${isDeletePost ? 'scale-100' : 'scale-0'}`}>
         {/* confirm screen */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-sm p-5">
+        {
+          isPostDeleting 
+          ?
+          <div>
+            <p>Post Deleting...</p>
+          </div>
+          :
+          <>
           {/* icon */}
           <div className="flex items-center justify-center mb-1.5">
             <div className="w-[24px] aspect-square rounded-full border border-red-500 flex items-center justify-center text-red-500 bg-red-100">
@@ -303,15 +333,24 @@ const Home = () => {
             <p className="text-gray-700">
               Are you sure to delete this post ?
             </p>
-            <p className="text-sm text-red-500 italic">Remember the action is undone.</p>
+            <p className="text-sm text-red-500 italic">Remember this action is undone.</p>
           </div>
           {/* buttons */}
           <div className="flex items-center justify-evenly mt-3">
-            <button className="px-3 py-0.5 rounded-sm text-sm bg-red-500 text-white transition-colors ease-in-out duration-150 hover:bg-red-400">delete</button>
+
+            
+
             <button className="px-3 py-0.5 rounded-sm text-sm bg-gray-500 text-white transition-colors ease-in-out duration-150 hover:bg-gray-400" onClick={()=>{
               setIsDeletePost(null)
             }}>cancel</button>
+
+            <button className="px-3 py-0.5 rounded-sm text-sm bg-red-500 text-white transition-colors ease-in-out duration-150 hover:bg-red-400" onClick={()=>{
+              dispatch(deletePost(isDeletePost?._id))
+            }}>delete</button>
+
           </div>
+          </>
+        }
         </div>
       </div>
     </div>

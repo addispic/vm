@@ -28,6 +28,10 @@ io.on('connection',socket=>{
   socket.on('addNewPost',data=>{
     io.emit('addNewPostEvent',data)
   })
+  // delete post
+  socket.on('deletePost',_id => {
+    io.emit('deletePostEvent', _id)
+  })
 })
 
 module.exports = {
