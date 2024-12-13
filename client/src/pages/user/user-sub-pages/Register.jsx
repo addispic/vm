@@ -5,6 +5,7 @@ import {useDispatch,useSelector} from 'react-redux'
 // icons
 // chat
 import { IoChatbubblesSharp } from "react-icons/io5";
+import { FaCar } from "react-icons/fa6";
 // hide
 import { PiEyeSlashThin } from "react-icons/pi";
 // show
@@ -131,10 +132,9 @@ const Register = () => {
             to={"/"}
             className={"flex items-center gap-x-0.5 text-green-400"}
           >
-            <IoChatbubblesSharp className="text-lg text-green-400" />
+            <FaCar className="text-lg text-green-400" />
             <div className="flex items-center font-black">
-              <span className="text-green-400">addis</span>
-              <span>Chat</span>
+              <span className="text-green-400">VM</span>
             </div>
           </NavLink>
         </div>

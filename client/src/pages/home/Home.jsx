@@ -26,6 +26,8 @@ import { CiShare2 } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 // warning
 import { IoIosWarning } from "react-icons/io";
+// add
+import { IoMdAdd } from "react-icons/io";
 
 // components
 // user profile
@@ -264,47 +266,58 @@ const Home = () => {
           <>No Posts Yet</>
         )}
       </div>
+      {
+        false && <>
+        {/* new post form */}
+        <div className="bg-white px-[3%] py-1 flex items-center gap-x-3">
+          {/* file picker */}
+          <div className="self-end">
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              id="post-file-picker"
+            />
+            <label htmlFor="post-file-picker">
+              <MdAttachFile className="text-2xl rotate-[24deg] cursor-pointer text-green-500" />
+            </label>
+          </div>
+          {/* text in */}
+          <div className="flex-grow py-0.5 px-1.5 border border-green-500 rounded-sm">
+            <textarea
+              className="focus:outline-none focus:ring-0 border-none p-0 w-full h-[17px] max-h-[72vh] resize-none bg-transparent m-0 text-sm"
+              name=""
+              id="post-text-input"
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+              placeholder="text . . ."
+              onKeyUp={(e) => {
+                adjustPostTextAreaHeight(e);
+              }}
+            ></textarea>
+          </div>
+          {/* send button */}
+          <div className="self-end">
+            <GrSend
+              className="text-green-500 text-2xl cursor-pointer"
+              onClick={() => {
+                formSubmitHandler();
+              }}
+            />
+          </div>
+        </div>
+      </>
+      }
       {user ? (
         <>
-          {/* new post form */}
-          <div className="bg-white px-[3%] py-1 flex items-center gap-x-3">
-            {/* file picker */}
-            <div className="self-end">
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                id="post-file-picker"
-              />
-              <label htmlFor="post-file-picker">
-                <MdAttachFile className="text-2xl rotate-[24deg] cursor-pointer text-green-500" />
-              </label>
-            </div>
-            {/* text in */}
-            <div className="flex-grow py-0.5 px-1.5 border border-green-500 rounded-sm">
-              <textarea
-                className="focus:outline-none focus:ring-0 border-none p-0 w-full h-[17px] max-h-[72vh] resize-none bg-transparent m-0 text-sm"
-                name=""
-                id="post-text-input"
-                value={text}
-                onChange={(e) => {
-                  setText(e.target.value);
-                }}
-                placeholder="text . . ."
-                onKeyUp={(e) => {
-                  adjustPostTextAreaHeight(e);
-                }}
-              ></textarea>
-            </div>
-            {/* send button */}
-            <div className="self-end">
-              <GrSend
-                className="text-green-500 text-2xl cursor-pointer"
-                onClick={() => {
-                  formSubmitHandler();
-                }}
-              />
-            </div>
+          <div className="relative flex items-center justify-center">
+            {/* button */}
+            <button className="flex items-center gap-x-1 bg-neutral-200 rounded-sm text-sm px-1.5 py-1 transition-all ease-in-out duration-150 hover:bg-neutral-300">
+              <IoMdAdd className="text-lg"/>
+              <span>Add New Vehicle</span>
+            </button>
           </div>
         </>
       ) : (

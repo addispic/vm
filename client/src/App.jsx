@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // config
 // socket
 import { SOCKET } from "./config";
+
 
 // components
 import Header from "./components/Header";
@@ -24,7 +25,7 @@ import PagesNotFound from "./pages/PagesNotFound";
 
 // slices
 // user
-import { getAllUsers, addNewUser } from "./features/users/users.slice";
+import { getAllUsers, addNewUser, userSelector } from "./features/users/users.slice";
 // posts
 import {getAllPosts,addNewPostEvent, deletePostEvent} from './features/posts/posts.slice'
 
@@ -33,6 +34,11 @@ const App = () => {
   const dispatch = useDispatch();
   // location
   const location = useLocation();
+
+  // states from slices
+  const user = useSelector(userSelector)
+
+  console.log(user, "++++++++")
 
   // use effects
   useEffect(() => {
@@ -75,7 +81,7 @@ const App = () => {
       {/* routes */}
       <div className="h-[93vh] overflow-y-auto flex gap-x-5">
         {/* left side nav */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full bg-red-100">left side nav</div>}
+        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full bg-red-300">left side nav</div>}
         
         <div className="flex-grow">
           <Routes>
@@ -96,7 +102,7 @@ const App = () => {
           </Routes>
         </div>
         {/* right side components */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[30%] h-full bg-gray-100">right side nav</div>}
+        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[30%] h-full bg-gray-300">right side nav</div>}
         
       </div>
     </div>

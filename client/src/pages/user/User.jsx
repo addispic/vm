@@ -2,8 +2,8 @@ import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
 
 // icons
-// chat
-import { IoChatbubblesSharp } from "react-icons/io5";
+// car
+import { FaCar } from "react-icons/fa6";
 // call
 import { PiPhoneCallFill } from "react-icons/pi";
 // email
@@ -21,10 +21,9 @@ const User = () => {
               {/* site-logo */}
               <div>
                 <NavLink to={'/'} className={'flex items-center gap-x-0.5 text-gray-100'}>
-                  <IoChatbubblesSharp className="text-2xl text-gray-200"/>
+                  <FaCar className="text-2xl text-gray-200"/>
                   <div className="flex items-center font-black">
-                    <span className="text-xl text-gray-200">addis</span>
-                    <span>Chat</span>
+                    <span className="text-xl text-gray-200">VM</span>
                   </div>
                 </NavLink>
               </div>
@@ -35,7 +34,7 @@ const User = () => {
             <div className="flex items-center justify-center relative">
                 {/* image */}
                 <div>
-                    <img className="h-[450px]" src="/user-page-image.png" alt="" />
+                    <img className="h-[450px]" src="https://freepngimg.com/download/car/5-2-car-png-pic.png" alt="" />
                 </div>
                 {/* card */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-white py-5 px-[13%] rounded-md shadow-2xl">
@@ -47,7 +46,7 @@ const User = () => {
                                     <PiPhoneCallFill />
                                 </div>
                             </div>
-                            <span className="text-sm italic text-green-500">: +251923996736</span>
+                            <span className="text-sm italic text-green-500">: +251937710465</span>
                              </div>
                         {/* email */}
                         <div className="flex items-center gap-x-1.5">
