@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 
 // icons
 import { FaCar } from "react-icons/fa6";
+import { FaCircleUser } from "react-icons/fa6";
 
 // slices
 // user
@@ -12,8 +13,6 @@ import { userSelector, logout } from "../features/users/users.slice";
 // components
 // username
 import Username from "../pages/user/user-sub-pages/Username";
-// user profile
-import UserProfile from "../pages/user/user-sub-pages/UserProfile";
 
 const Header = () => {
   // dispatch
@@ -22,18 +21,18 @@ const Header = () => {
   // user
   const user = useSelector(userSelector);
   return (
-    <header className="h-[7vh] bg-green-500 text-white w-full">
+    <header className="h-[7vh] bg-white shadow-md w-full">
       {/* container */}
       <div className="container-max-width flex items-center justify-between h-full">
         {/* logo */}
         <div>
           <NavLink
             to={"/"}
-            className={"flex items-center gap-x-0.5 text-green-400"}
+            className={"flex items-center gap-x-0.5 text-green-500"}
           >
-            <FaCar className="text-lg text-neutral-100" />
+            <FaCar className="text-lg " />
             <div className="flex items-center font-black">
-              <span className="text-neutral-100">VM</span>
+              <span>Vehicle Management</span>
             </div>
           </NavLink>
         </div>
@@ -42,8 +41,8 @@ const Header = () => {
           {user ? (
             <div className="flex items-center justify-end gap-x-3">
               {/* profile */}
-              <div className="w-[28px] aspect-square rounded-full overflow-hidden">
-                <UserProfile />
+              <div>
+                <FaCircleUser className="text-2xl text-green-600"/>
               </div>
               {/* username */}
               <div className="text-sm">
@@ -53,7 +52,7 @@ const Header = () => {
               {/* logout button */}
               <div>
                 <button
-                  className="px-3 py-0.5 rounded-sm bg-white text-green-500 text-sm transition-colors ease-in-out duration-150 hover:bg-gray-50"
+                  className="px-3 py-0.5 rounded-sm bg-green-500 text-white text-sm transition-colors ease-in-out duration-150 hover:bg-green-400"
                   onClick={() => {
                     dispatch(logout());
                   }}

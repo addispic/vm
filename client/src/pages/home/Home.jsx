@@ -212,7 +212,7 @@ const Home = () => {
   return (
     <div className="h-[93vh] flex flex-col">
       {/* header */}
-      <header className="flex items-center justify-between gap-x-1.5 bg-neutral-100 px-3 py-1.5">
+      <header className="flex items-center justify-between gap-x-1.5 bg-neutral-100  mt-1.5 rounded-md px-3 py-1.5">
         {/* search by name */}
         <div>
           <div className="min-w-64 flex items-center gap-x-1.5 border border-neutral-200 rounded-md px-3 py-1 text-sm">
@@ -253,7 +253,7 @@ const Home = () => {
             </div>
             {/* pop up */}
             {filter.isOn && (
-              <div className="absolute right-0 top-[105%] bg-white p-1.5 rounded-md shadow-lg z-50 whitespace-nowrap">
+              <div className="absolute right-0 top-[105%] bg-white p-1.5 rounded-md shadow-lg z-50 whitespace-nowrap text-sm text-neutral-500">
                 {filter.options.map((item) => {
                   return (
                     <div
