@@ -17,6 +17,10 @@ import { MdCameraAlt } from "react-icons/md";
 import { FaChevronDown } from "react-icons/fa6";
 // edit
 import { CiEdit } from "react-icons/ci";
+// search
+import { CiSearch } from "react-icons/ci";
+// filter
+import { CiFilter } from "react-icons/ci";
 
 // config
 import { BASE_URI } from "../../config";
@@ -168,7 +172,33 @@ const Home = () => {
   return (
     <div className="h-[93vh] flex flex-col">
       {/* header */}
-      <header>Heder ovehre here</header>
+      <header className="flex items-center justify-between gap-x-1.5 bg-neutral-100 px-3 py-1.5">
+        {/* search by name */}
+        <div>
+          <div className="min-w-64 flex items-center gap-x-1.5 border border-neutral-200 rounded-md px-3 py-1 text-sm">
+            <input
+              className="w-full focus:ring-0 focus:outline-none border-none bg-transparent"
+              placeholder="Search vehicle by name"
+              type="text"
+            />
+            <CiSearch className="text-xl" />
+          </div>
+        </div>
+        {/* filter */}
+        <div className="flex items-center gap-x-1.5">
+          <div className="flex items-center gap-x-1">
+            <CiFilter />
+            <span className="text-sm text-neutral-500">Filter</span>
+          </div>
+          <div className="relative">
+            {/* span */}
+            <div className="cursor-pointer flex items-center gap-x-3 border border-neutral-300 px-3 py-1 text-sm rounded-md">
+              <span>Select</span>
+              <FaChevronDown />
+            </div>
+          </div>
+        </div>
+      </header>
       {/* vehicles content */}
       <div
         className={`flex-grow overflow-y-auto px-[3%] pt-[1vh] relative ${
