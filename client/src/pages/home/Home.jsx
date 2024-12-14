@@ -58,7 +58,7 @@ const Home = () => {
 
   // local
   // local vehicles
-  const [localVehicles, setLocalVehicles] = useState(vehicles);
+  const [localVehicles, setLocalVehicles] = useState([]);
   // name filter
   const [nameFilter, setNameFilter] = useState("");
   // is new on
@@ -208,6 +208,8 @@ const Home = () => {
     }
   };
 
+  let finalsV = localVehicles.length || nameFilter ? localVehicles : vehicles;
+
   return (
     <div className="h-[93vh] flex flex-col">
       {/* header */}
@@ -222,6 +224,8 @@ const Home = () => {
               value={nameFilter}
               onChange={(e) => {
                 setNameFilter(e.target.value);
+              }}
+              onKeyUp={() => {
                 filterByNameHandler();
               }}
             />
@@ -302,9 +306,9 @@ const Home = () => {
           user ? "max-h-[88vh]" : "max-h-[93vh]"
         }`}
       >
-        {localVehicles?.length > 0 ? (
+        {finalsV?.length > 0 ? (
           <>
-            {localVehicles.map((vehicleItem) => {
+            {finalsV.map((vehicleItem) => {
               return (
                 <div
                   key={vehicleItem._id}
