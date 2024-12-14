@@ -121,11 +121,11 @@ const App = () => {
       {/* header */}
       {location?.pathname?.split("/")[1] !== "user" && <Header />}
       {/* routes */}
-      <div className="h-[93vh] overflow-y-auto flex gap-x-5">
+      <div className="h-[93vh] overflow-y-auto flex gap-x-5 relative">
         {/* left side nav */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full px-3 py-1.5">
+        {location?.pathname?.split("/")[1] !== "user" && <div className="w-0 overflow-hidden shrink-0  md:relative absolute left-0 top-0 h-full z-50 md:w-56 md:pr-5  md:pb-3 transition-all ease-in-out duration-150" id="menu-container">
           {/* left list */}
-          <div className="w-full h-full bg-neutral-200 rounded-md overflow-hidden p-5 flex flex-col justify-between">
+          <div className="w-full mx-3 my-1.5 h-full bg-neutral-200 rounded-md overflow-hidden p-5 mr-3 flex flex-col justify-between">
             {/* menu list */}
             <div>
               <div className="text-left font-black text-neutral-500 mb-3 flex items-center gap-x-1.5">
@@ -195,9 +195,9 @@ const App = () => {
           </Routes>
         </div>
         {/* right side components */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="max-w-72 h-full px-3 py-1.5">
+        {location?.pathname?.split("/")[1] !== "user" && <div className="overflow-hidden relative w-0 lg:w-72 h-full">
           {/* latest */}
-          <div className="w-full h-full bg-neutral-100 p-5 rounded-md overflow-hidden">
+          <div className="w-full h-full bg-neutral-100 p-5 rounded-md overflow-hidden mx-3 my-1.5">
             <h3 className="text-green-500 font-medium">Latest News</h3>
             {/* lists */}
             <div className="mt-3">

@@ -5,6 +5,8 @@ import { NavLink } from "react-router-dom";
 // icons
 import { FaCar } from "react-icons/fa6";
 import { FaCircleUser } from "react-icons/fa6";
+import { IoMdMore } from "react-icons/io";
+import { RiMenu2Line } from "react-icons/ri";
 
 // slices
 // user
@@ -20,19 +22,38 @@ const Header = () => {
   // states from slices
   // user
   const user = useSelector(userSelector);
+
+  // menu toggler
+  const menuTogglerHandler = () => {
+    let menuContainer = document.getElementById("menu-container")
+    if(menuContainer?.classList.contains("absolute")){
+      if(menuContainer?.classList.contains('w-0')){
+        menuContainer?.classList.remove("w-0")
+        menuContainer?.classList.add("w-56")
+      }else{
+        menuContainer?.classList.add("w-0")
+        menuContainer?.classList.remove("w-56")
+      }
+    }
+  }
   return (
     <header className="h-[7vh] bg-white shadow-md w-full">
       {/* container */}
       <div className="container-max-width flex items-center justify-between h-full">
         {/* logo */}
-        <div>
+        <div className="flex items-center gap-1.5">
+          {/* toggler */}
+          <div onClick={menuTogglerHandler} className="md:hidden text-neutral-500 text-xl cursor-pointer">
+            <RiMenu2Line />
+          </div>
           <NavLink
             to={"/"}
             className={"flex items-center gap-x-0.5 text-green-500"}
           >
             <FaCar className="text-lg " />
             <div className="flex items-center font-black">
-              <span>Vehicle Management</span>
+              <small className="md:hidden">VM</small>
+              <span className="hidden md:inline-block">Vehicle Management</span>
             </div>
           </NavLink>
         </div>

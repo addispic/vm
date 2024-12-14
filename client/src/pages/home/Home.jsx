@@ -21,8 +21,6 @@ import { CiEdit } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
 // filter
 import { CiFilter } from "react-icons/ci";
-// add new
-import { FaCircleUser } from "react-icons/fa6";
 
 // config
 import { BASE_URI } from "../../config";
@@ -60,9 +58,9 @@ const Home = () => {
 
   // local
   // local vehicles
-  const [localVehicles,setLocalVehicles] = useState(vehicles)
+  const [localVehicles, setLocalVehicles] = useState(vehicles);
   // name filter
-  const [nameFilter,setNameFilter] = useState("")
+  const [nameFilter, setNameFilter] = useState("");
   // is new on
   const [isNewOn, setIsNewOn] = useState(false);
   // file
@@ -199,17 +197,16 @@ const Home = () => {
 
   // filter by name handler
   const filterByNameHandler = (e) => {
-    if(e.target.value?.trim()){
-      let filteredVehicles = vehicles.filter(vi => vi.name?.startsWith(e.target.value)) 
-      console.log(filteredVehicles)
-      setLocalVehicles(filteredVehicles)
-    }else{
-      setLocalVehicles(vehicles)
+    if (e.target.value?.trim()) {
+      let filteredVehicles = vehicles.filter((vi) =>
+        vi.name?.startsWith(e.target.value)
+      );
+      console.log(filteredVehicles);
+      setLocalVehicles(filteredVehicles);
+    } else {
+      setLocalVehicles(vehicles);
     }
-    
-  }
-
-  console.log("+++",localVehicles,vehicles, "+++")
+  };
 
   return (
     <div className="h-[93vh] flex flex-col">
@@ -217,78 +214,80 @@ const Home = () => {
       <header className="flex items-center justify-between gap-x-1.5 bg-neutral-100  mt-1.5 rounded-md px-3 py-1.5">
         {/* search by name */}
         <div>
-          <div className="min-w-64 flex items-center gap-x-1.5 border border-neutral-200 rounded-md px-3 py-1 text-sm">
+          <div className="min-w-32 lg:min-w-64 flex items-center gap-x-1.5 border border-neutral-200 rounded-md px-3 py-1 text-sm">
             <input
               className="w-full focus:ring-0 focus:outline-none border-none bg-transparent"
               placeholder="Search vehicle by name"
-              type="text" 
+              type="text"
               onChange={filterByNameHandler}
             />
             <CiSearch className="text-xl" />
           </div>
         </div>
         <div className="flex items-center gap-x-1.5">
-
-        {/* filter */}
-        <div className="flex items-center gap-x-1.5">
-          <div className="flex items-center gap-x-1">
-            <CiFilter />
-            <span className="text-sm text-neutral-500">Filter</span>
-          </div>
-          <div className="relative">
-            {/* span */}
-            <div
-              onClick={() => {
-                setFilter((prev) => {
-                  return {
-                    ...prev,
-                    isOn: !prev.isOn,
-                  };
-                });
-              }}
-              className="cursor-pointer flex items-center gap-x-3 border border-neutral-300 px-3 py-1 text-sm rounded-md"
-            >
-              <span>{filter.selected || "select"}</span>
-              <FaChevronDown
-                className={`transition-transform text-sm text-neutral-500 ease-in-out duration-150 ${
-                  filter.isOn ? "-rotate-180" : "rotate-0"
-                }`}
-              />
+          {/* filter */}
+          <div className="flex items-center gap-x-1.5">
+            <div className="flex items-center gap-x-1">
+              <CiFilter />
+              <span className="text-sm text-neutral-500 hidden md:inline-block">Filter</span>
             </div>
-            {/* pop up */}
-            {filter.isOn && (
-              <div className="absolute right-0 top-[105%] bg-white p-1.5 rounded-md shadow-lg z-50 whitespace-nowrap text-sm text-neutral-500">
-                {filter.options.map((item) => {
-                  return (
-                    <div
-                      onClick={() => {
-                        setFilter((prev) => {
-                          return {
-                            ...prev,
-                            selected: item.text,
-                            isOn: false,
-                          };
-                        });
-                      }}
-                      key={item.text}
-                      className="cursor-pointer border-b border-neutral-200 hover:bg-neutral-100 p-0.5"
-                    >
-                      <span>{item.text}</span>
-                    </div>
-                  );
-                })}
+            <div className="relative">
+              {/* span */}
+              <div
+                onClick={() => {
+                  setFilter((prev) => {
+                    return {
+                      ...prev,
+                      isOn: !prev.isOn,
+                    };
+                  });
+                }}
+                className="cursor-pointer flex items-center gap-x-3 border border-neutral-300 px-3 py-1 text-sm rounded-md"
+              >
+                <span>{filter.selected || "select"}</span>
+                <FaChevronDown
+                  className={`transition-transform text-sm text-neutral-500 ease-in-out duration-150 ${
+                    filter.isOn ? "-rotate-180" : "rotate-0"
+                  }`}
+                />
               </div>
-            )}
+              {/* pop up */}
+              {filter.isOn && (
+                <div className="absolute right-0 top-[105%] bg-white p-1.5 rounded-md shadow-lg z-50 whitespace-nowrap text-sm text-neutral-500">
+                  {filter.options.map((item) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          setFilter((prev) => {
+                            return {
+                              ...prev,
+                              selected: item.text,
+                              isOn: false,
+                            };
+                          });
+                        }}
+                        key={item.text}
+                        className="cursor-pointer border-b border-neutral-200 hover:bg-neutral-100 p-0.5"
+                      >
+                        <span>{item.text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        {/* add new */}
-        <div>
-          <button onClick={() => {
+          {/* add new */}
+          <div>
+            <button
+              onClick={() => {
                 setIsNewOn(true);
-              }} className="w-[24px] aspect-square rounded-sm flex items-center justify-center bg-neutral-200 text-neutral-400 hover:bg-neutral-300 hover:text-neutral-600">
-            <IoMdAdd   />
-          </button>
-        </div>
+              }}
+              className="w-[24px] aspect-square rounded-sm flex items-center justify-center bg-neutral-200 text-neutral-400 hover:bg-neutral-300 hover:text-neutral-600"
+            >
+              <IoMdAdd />
+            </button>
+          </div>
         </div>
       </header>
       {/* vehicles content */}
@@ -323,6 +322,11 @@ const Home = () => {
                         <div>
                           {/* name */}
                           <p>{vehicleItem.name}</p>
+                          <p className="md:hidden text-sm text-orange-600">Status: {vehicleItem.status}</p>
+                          <span className="sm:hidden text-neutral-500 ml-1.5 text-xs">updated:{formatDistanceToNow(
+                            new Date(vehicleItem.updatedAt),
+                            { addSuffix: true }
+                          )}</span>
                           {/* author detail */}
                           <div className="text-xs">
                             <p>
@@ -336,12 +340,13 @@ const Home = () => {
                                   { addSuffix: true }
                                 )}
                               </span>
+                              
                             </p>
                           </div>
                         </div>
                       </div>
                       {/* status */}
-                      <div>
+                      <div className="hidden md:inline-block">
                         <p className="text-sm text-neutral-500">status</p>
                         <p
                           className={`text-sm ${
@@ -362,7 +367,7 @@ const Home = () => {
                         </p>
                       </div>
                       {/* modified */}
-                      <div>
+                      <div className="hidden sm:inline-block">
                         <p className="text-sm text-neutral-500">
                           last modified
                         </p>
