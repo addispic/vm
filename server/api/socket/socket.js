@@ -1,6 +1,6 @@
 const http = require("http");
 const express = require("express");
-const socketIo = require('socket.io');
+const socketIo = require("socket.io");
 
 // app
 const app = express();
@@ -8,31 +8,35 @@ const app = express();
 const server = http.createServer(app);
 
 // io
-const io = socketIo(server,{
+const io = socketIo(server, {
   cors: {
     origin: true,
-  }
-})
+  },
+});
 
 // connection
-io.on('connection',socket=>{
-  // console.log(socket.id)
+io.on("connection", (socket) => {
   // new user register
-  socket.on("newUserRegister",data=>{
+  socket.on("newUserRegister", (data) => {
     // send new user
-    io.emit("emitNewUser",data)
-  })
+    io.emit("emitNewUser", data);
+  });
 
-  // post
-  // add new post
-  socket.on('addNewPost',data=>{
-    io.emit('addNewPostEvent',data)
-  })
-  // delete post
-  socket.on('deletePost',_id => {
-    io.emit('deletePostEvent', _id)
-  })
-})
+  // vehicles
+  // new vehicle
+  socket.on("addNewVehicle", (data) => {
+    io.emit("addNewVehicleEvent", data);
+  });
+  // update vehicle
+  socket.on("updateVehicle", (data) => {
+    io.emit("updateVehicleEvent", data);
+  });
+
+  // delete vehicle
+  socket.on("deleteVehicle", (_id) => {
+    io.emit("deleteVehicleEvent", _id);
+  });
+});
 
 module.exports = {
   app,

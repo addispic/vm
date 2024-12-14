@@ -26,8 +26,11 @@ app.use(
 // routes
 // user
 app.use("/api/user", require("./api/routes/user.routes"));
-// post
-app.use("/api/post", require("./api/routes/post.routes"));
+// vehicles
+app.use("/api/vehicle", require("./api/routes/vehicle.routes"));
+
+// public
+app.use("/public", express.static("public"));
 
 // listen
 server.listen(PORT, async () => {

@@ -1,43 +1,41 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 
 // icons
-// file
-import { MdAttachFile } from "react-icons/md";
-// send
-import { GrSend } from "react-icons/gr";
-// likes
-import { FaRegThumbsUp } from "react-icons/fa";
-import { FaThumbsUp } from "react-icons/fa";
-// favorite
-import { MdFavorite } from "react-icons/md";
-import { MdFavoriteBorder } from "react-icons/md";
-// comments
-import { MdModeComment } from "react-icons/md";
-import { MdOutlineModeComment } from "react-icons/md";
-// more
-import { RiMore2Fill } from "react-icons/ri";
-// edit
-import { CiEdit } from "react-icons/ci";
-// share
-import { CiShare2 } from "react-icons/ci";
 // delete
 import { RiDeleteBin6Line } from "react-icons/ri";
 // warning
 import { IoIosWarning } from "react-icons/io";
 // add
 import { IoMdAdd } from "react-icons/io";
+// close
+import { IoMdClose } from "react-icons/io";
+// camera
+import { MdCameraAlt } from "react-icons/md";
+// down
+import { FaChevronDown } from "react-icons/fa6";
+// edit
+import { CiEdit } from "react-icons/ci";
 
-// components
-// user profile
-import UserProfile from "../user/user-sub-pages/UserProfile";
+// config
+import { BASE_URI } from "../../config";
+
 // user name
 import Username from "../user/user-sub-pages/Username";
 
 // slices
-// posts
-import { postsSelector, addNewPost,deletePost, isPostDeletingSelector } from "../../features/posts/posts.slice";
+// vehicles
+import {
+  addNewVehicle,
+  vehiclesSelector,
+  deleteVehicle,
+  isVehicleDeletingSelector,
+  isNewVehicleUploadingSelector,
+  isVehicleUploadingDoneSelector,
+  updateVehicle,
+  isVehicleUpdatingSelector,
+} from "../../features/vehicles/vehicles.slice";
 // users
 import { userSelector } from "../../features/users/users.slice";
 
@@ -45,325 +43,635 @@ const Home = () => {
   // states from slice
   // user
   const user = useSelector(userSelector);
-  // posts
-  const posts = useSelector(postsSelector);
-  // is  post deleting
-  const isPostDeleting = useSelector(isPostDeletingSelector)
+  // vehicles
+  const vehicles = useSelector(vehiclesSelector);
+  // is new vehicle uploading
+  const isNewVehicleUploading = useSelector(isNewVehicleUploadingSelector);
+  // is vehicle uploading done
+  const isVehicleUploadingDone = useSelector(isVehicleUploadingDoneSelector);
+  // is vehicle uploading done
+  const isVehicleUpdating = useSelector(isVehicleUpdatingSelector);
 
-  // local states
-  const [text, setText] = useState("");
-  // more option
-  const [postMore, setPostMore] = useState({
+  // local
+  // is new on
+  const [isNewOn, setIsNewOn] = useState(false);
+  // file
+  const [file, setFile] = useState(null);
+  // update file
+  const [updateFile, setUpdateFile] = useState(null);
+  // name
+  const [name, setName] = useState("");
+  // update name
+  const [updateName, setUpdateName] = useState("");
+  // status
+  const [status, setStatus] = useState({
     options: [
       {
-        icon: CiShare2,
-        text: "share",
+        text: "Available",
       },
       {
-        icon: MdFavoriteBorder,
-        text: "favorite",
+        text: "In Production",
       },
       {
-        icon: CiEdit,
-        text: "edit",
+        text: "In Service",
       },
       {
-        icon: RiDeleteBin6Line,
-        text: "delete",
+        text: "Retired",
+      },
+      {
+        text: "Sold",
       },
     ],
-    selectedId: null,
+    selected: "",
+    isOn: false,
   });
-  // delete post
-  const [isDeletePost,setIsDeletePost] = useState(null)
+  // update status
+  const [updateStatus, setUpdateStatus] = useState({
+    options: [
+      {
+        text: "Available",
+      },
+      {
+        text: "In Production",
+      },
+      {
+        text: "In Service",
+      },
+      {
+        text: "Retired",
+      },
+      {
+        text: "Sold",
+      },
+    ],
+    selected: "",
+    isOn: false,
+  });
+  // is vehicle deleting
+  const isVehicleDeleting = useSelector(isVehicleDeletingSelector);
+
+  // update vehicle
+  const [isUpdateVehicle, setIsUpdateVehicle] = useState(null);
+  // delete vehicle
+  const [isDeleteVehicle, setIsDeleteVehicle] = useState(null);
 
   // dispatch
   const dispatch = useDispatch();
 
-  // adjust textarea height
-  const adjustPostTextAreaHeight = (e) => {
-    let textarea = document.getElementById("post-text-input");
-    textarea.style.height = "17px";
-    let scHeight = e.target.scrollHeight;
-    textarea.style.height = `${scHeight}px`;
-    if (!e.target.value) {
-      textarea.style.height = "17px";
-    }
-  };
+  // hide the pop up after deleting
+  useEffect(() => {
+    setIsDeleteVehicle(null);
+  }, [vehicles]);
+
+  // hide pop up after adding the vehicle
 
   // form submit handler
   const formSubmitHandler = () => {
-    let textarea = document.getElementById("post-text-input");
-    if (text?.trim()) {
-      dispatch(addNewPost({ text }));
+    if (status.selected && name.trim() && file) {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("image", file);
+      formData.append("status", status.selected);
+      dispatch(addNewVehicle(formData));
     }
-    textarea.style.height = "17px";
-    setText("");
   };
 
-  // hide the pop up after deleting
-  useEffect(()=>{
-    setIsDeletePost(null)
-  },[posts])
+  // update vehicle form handler
+  const updateVehicleFormHandler = () => {
+    dispatch(
+      updateVehicle({
+        _id: isUpdateVehicle._id,
+        name: updateName,
+        status: updateStatus.selected,
+        file: updateFile,
+      })
+    );
+  };
 
-  
+  useEffect(() => {
+    setIsNewOn(false);
+    setName("");
+    setFile(null);
+    setStatus((prev) => {
+      return {
+        ...prev,
+        isOn: false,
+        selected: "",
+      };
+    });
+  }, [isVehicleUploadingDone]);
+
+  useEffect(() => {
+    setIsUpdateVehicle(null);
+  }, [isVehicleUpdating]);
 
   return (
     <div className="h-[93vh] flex flex-col">
-      {/* post content */}
+      {/* header */}
+      <header>Heder ovehre here</header>
+      {/* vehicles content */}
       <div
-        className={`flex-grow overflow-y-auto px-[3%] pt-[1vh] ${
+        className={`flex-grow overflow-y-auto px-[3%] pt-[1vh] relative ${
           user ? "max-h-[88vh]" : "max-h-[93vh]"
         }`}
       >
-        {posts?.length > 0 ? (
+        {vehicles?.length > 0 ? (
           <>
-            {posts.map((postItem) => {
+            {vehicles.map((vehicleItem) => {
               return (
                 <div
-                  key={postItem?._id}
-                  className="mb-5 bg-white shadow-lg p-3 relative"
-                  onClick={(e)=>{
-                    e.stopPropagation()
-                    setPostMore(prev => {
-                      return {
-                        ...prev,
-                        selectedId: null,
-                      }
-                    })
-                  }}
+                  key={vehicleItem._id}
+                  className=" border-b border-neutral-200 py-2.5"
                 >
-                  {/* more option */}
-                  {user ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setPostMore((prev) => {
-                          return {
-                            ...prev,
-                            selectedId:
-                              prev?.selectedId === postItem?._id
-                                ? null
-                                : postItem?._id,
-                          };
-                        });
-                      }}
-                      className="absolute right-1.5 top-1.5 z-0 text-xl text-green-500"
-                    >
-                      <RiMore2Fill />
-                    </button>
-                  ) : null}
-                  {/* option pop up */}
-                  {user && (
-                    <div
-                      className={`absolute right-0 top-1.5 z-10 bg-white shadow-lg transition-transform ease-in-out duration-150 ${
-                        postMore?.selectedId === postItem?._id
-                          ? "scale-100"
-                          : "scale-0"
-                      }`}
-                    >
-                      {postMore?.options?.map((postMoreItem) => {
-                        return (
-                          <>
-                            {(postMoreItem?.text === "delete" ||
-                              postMoreItem?.text === "edit") &&
-                            user?._id === postItem?.userId ? (
-                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100" onClick={(e)=>{
-                                e.stopPropagation()
-                                if(postMoreItem?.text === "delete"){
-                                  setIsDeletePost(postItem)
-                                  setPostMore(prev => {
-                                    return {
-                                      ...prev,
-                                      selectedId: null,
-                                    }
-                                  })
-                                }
-                              }}>
-                                {/* icon */}
-                                <postMoreItem.icon className="text-green-500" />
-                                {/* text */}
-                                <span className="text-sm text-green-700">
-                                  {postMoreItem?.text}
-                                </span>
-                              </div>
-                            ) : (postMoreItem?.text === "share" ||
-                                postMoreItem?.text === "favorite") &&
-                              user?._id !== postItem?.userId ? (
-                              <div className="flex items-center gap-x-1.5 px-3 py-0.5 cursor-pointer transition-colors ease-in-out duration-150 hover:bg-green-100" onClick={(e)=>{
-                                e.stopPropagation()
-                              }}>
-                                {/* icon */}
-                                <postMoreItem.icon className="text-green-500" />
-                                {/* text */}
-                                <span className="text-sm text-green-700">
-                                  {postMoreItem?.text}
-                                </span>
-                              </div>
-                            ) : null}
-                          </>
-                        );
-                      })}
-                    </div>
-                  )}
-                  {/* text */}
-                  <div className="text-sm ml-[3%] py-3">
-                    <p>{postItem?.text}</p>
-                  </div>
-                  {/* control */}
-                  <div className="flex items-center gap-x-3 border-bv border-green-500 py-1.5">
-                    {/* author */}
-                    <div className="flex items-center gap-x-1">
-                      {/* profile */}
-                      <div className="w-[26px] aspect-square rounded-full overflow-hidden">
-                        <UserProfile />
+                  {/* vehicle detail */}
+                  <div className="flex items-center justify-between gap-x-12">
+                    {/* left */}
+                    <div className="flex items-center justify-between flex-1">
+                      {/* vehicle detail */}
+                      <div className="flex items-center gap-x-1.5">
+                        {/* image */}
+                        <div className="w-[36px] aspect-square rounded-full overflow-hidden bg-neutral-300 text-3xl text-neutral-500">
+                          <img
+                            className="w-full h-full object-center object-cover"
+                            src={`${BASE_URI}/${vehicleItem.image}`}
+                            alt=""
+                          />
+                        </div>
+                        {/* text */}
+                        <div>
+                          {/* name */}
+                          <p>{vehicleItem.name}</p>
+                          {/* author detail */}
+                          <div className="text-xs">
+                            <p>
+                              By{" "}
+                              <span className="text-green-600">
+                                <Username _id={vehicleItem.userId} />
+                              </span>{" "}
+                              <span className="text-neutral-500 ml-3">
+                                {formatDistanceToNow(
+                                  new Date(vehicleItem.createdAt),
+                                  { addSuffix: true }
+                                )}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      {/* username */}
-                      <div className="text-sm text-gray-700">
-                        <Username _id={postItem?.userId} />
+                      {/* status */}
+                      <div>
+                        <p className="text-sm text-neutral-500">status</p>
+                        <p
+                          className={`text-sm ${
+                            vehicleItem.status === "Available"
+                              ? "text-green-600"
+                              : vehicleItem.status === "In Production"
+                              ? "text-orange-500"
+                              : vehicleItem.status === "In Service"
+                              ? "text-red-600"
+                              : vehicleItem.status === "Retired"
+                              ? "text-blue-700"
+                              : vehicleItem.status === "Sold"
+                              ? "text-neutral-800"
+                              : ""
+                          }`}
+                        >
+                          {vehicleItem.status}
+                        </p>
+                      </div>
+                      {/* modified */}
+                      <div>
+                        <p className="text-sm text-neutral-500">
+                          last modified
+                        </p>
+                        <p className="text-sm text-green-500">
+                          {formatDistanceToNow(
+                            new Date(vehicleItem.updatedAt),
+                            { addSuffix: true }
+                          )}
+                        </p>
                       </div>
                     </div>
-                    {/* actions*/}
-                    <div className="flex items-center gap-x-3">
-                      {/* like */}
-                      <button className="text-green-500 flex items-center">
-                        <span className="font-medium mr-1 text-xs mt-1.5">
-                          {12}
-                        </span>
-                        {true ? <FaThumbsUp /> : <FaRegThumbsUp />}
-                      </button>
-                      {/* favorite */}
-                      <button className="text-green-500 flex items-center text-lg mt-1">
-                        {true ? <MdFavorite /> : <MdFavoriteBorder />}
-                      </button>
-                      {/* comments */}
-                      <button className="text-green-500 flex items-center text-lg mt-1">
-                        <span className="font-medium mr-1 text-xs">3</span>
-                        {true ? (
-                          <MdModeComment />
-                        ) : (
-                          <MdOutlineModeComment />
-                        )}{" "}
-                        <span className="text-sm text-gray-700 ml-1">
-                          comments
-                        </span>
-                      </button>
-                    </div>
-                    {/* date */}
-                    <div>
-                      <span className="text-xs text-green-500">
-                        {formatDistanceToNow(new Date(postItem?.createdAt), {
-                          addSuffix: true,
-                        })}
-                      </span>
-                    </div>
+                    {/* right */}
+                    {user?._id === vehicleItem?.userId && (
+                      <div className="self-start flex items-center gap-1.5">
+                        <button
+                          className="w-[20px] aspect-square rounded-sm bg-green-100 flex items-center justify-center text-green-500 transition-colors ease-in-out duration-150 hover:bg-green-200 hover:text-green-600"
+                          onClick={() => {
+                            setIsUpdateVehicle(vehicleItem);
+                            setUpdateName(vehicleItem.name);
+                            setUpdateStatus((prev) => {
+                              return {
+                                ...prev,
+                                selected: vehicleItem.status,
+                              };
+                            });
+                          }}
+                        >
+                          <CiEdit />
+                        </button>
+                        <button
+                          className="w-[20px] aspect-square rounded-sm bg-red-50 flex items-center justify-center text-red-300 transition-colors ease-in-out duration-150 hover:bg-red-200 hover:text-red-600"
+                          onClick={() => {
+                            setIsDeleteVehicle(vehicleItem);
+                          }}
+                        >
+                          <RiDeleteBin6Line />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
             })}
           </>
         ) : (
-          <>No Posts Yet</>
+          <>No Vehicles Yet</>
         )}
       </div>
-      {
-        false && <>
-        {/* new post form */}
-        <div className="bg-white px-[3%] py-1 flex items-center gap-x-3">
-          {/* file picker */}
-          <div className="self-end">
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              id="post-file-picker"
-            />
-            <label htmlFor="post-file-picker">
-              <MdAttachFile className="text-2xl rotate-[24deg] cursor-pointer text-green-500" />
-            </label>
-          </div>
-          {/* text in */}
-          <div className="flex-grow py-0.5 px-1.5 border border-green-500 rounded-sm">
-            <textarea
-              className="focus:outline-none focus:ring-0 border-none p-0 w-full h-[17px] max-h-[72vh] resize-none bg-transparent m-0 text-sm"
-              name=""
-              id="post-text-input"
-              value={text}
-              onChange={(e) => {
-                setText(e.target.value);
-              }}
-              placeholder="text . . ."
-              onKeyUp={(e) => {
-                adjustPostTextAreaHeight(e);
-              }}
-            ></textarea>
-          </div>
-          {/* send button */}
-          <div className="self-end">
-            <GrSend
-              className="text-green-500 text-2xl cursor-pointer"
-              onClick={() => {
-                formSubmitHandler();
-              }}
-            />
-          </div>
-        </div>
-      </>
-      }
+
       {user ? (
         <>
           <div className="relative flex items-center justify-center">
             {/* button */}
-            <button className="flex items-center gap-x-1 bg-neutral-200 rounded-sm text-sm px-1.5 py-1 transition-all ease-in-out duration-150 hover:bg-neutral-300">
-              <IoMdAdd className="text-lg"/>
+            <button
+              onClick={() => {
+                setIsNewOn(true);
+              }}
+              className="flex items-center gap-x-1 bg-neutral-200 rounded-sm text-sm px-1.5 py-1 transition-all ease-in-out duration-150 hover:bg-neutral-300"
+            >
+              <IoMdAdd className="text-lg" />
               <span>Add New Vehicle</span>
             </button>
+            {/* add pop up */}
+            {isNewOn && (
+              <div className="fixed left-0 top-0 w-screen h-screen z-50 bg-black bg-opacity-20">
+                <div className="min-w-96 bg-white shadow-lg rounded-lg p-5 left-1/2 -translate-x-1/2 top-[15%] absolute">
+                  <header className="flex items-center justify-between">
+                    {/* left */}
+                    <div>
+                      <h3 className="text-green-600 font-medium">
+                        Add New Vehicle
+                      </h3>
+                    </div>
+                    {/* right */}
+                    <div>
+                      <button
+                        onClick={() => {
+                          setIsNewOn(false);
+                          setName("");
+                          setFile(null);
+                          setStatus((prev) => {
+                            return {
+                              ...prev,
+                              isOn: false,
+                              selected: "",
+                            };
+                          });
+                        }}
+                        className="w-[20px] aspect-square rounded-md bg-red-100 flex items-center justify-center text-red-600 transition-colors ease-in-out duration-150 hover:bg-red-200"
+                      >
+                        <IoMdClose />
+                      </button>
+                    </div>
+                  </header>
+                  {/* inputs */}
+                  <div className="mt-4">
+                    {/* vehicle profile */}
+                    <div>
+                      <input
+                        onChange={(e) => {
+                          setFile(e.target.files?.[0]);
+                        }}
+                        type="file"
+                        id="vehicle-photo"
+                        accept="image/*"
+                        hidden
+                      />
+                      <label
+                        htmlFor="vehicle-photo"
+                        className="w-max flex items-center gap-x-1.5"
+                      >
+                        <div className="w-[50px] aspect-square rounded-full overflow-hidden bg-neutral-300 cursor-pointer text-neutral-600 flex items-center justify-center text-3xl">
+                          {/* icon */}
+                          {file ? (
+                            <img
+                              className="w-full h-full object-center object-cover"
+                              src={URL.createObjectURL(file)}
+                            />
+                          ) : (
+                            <MdCameraAlt />
+                          )}
+                        </div>
+                        <div className="text-neutral-500 text-sm">
+                          {file ? (
+                            <div>
+                              <p>{file.name}</p>
+                              <p className="text-xs text-neutral-500 mt-[-2px]">
+                                {file.size / 1000}kb
+                              </p>
+                            </div>
+                          ) : (
+                            <span>vehicle image</span>
+                          )}
+                        </div>
+                      </label>
+                    </div>
+                    {/* vehicle name */}
+                    <div className="mt-3 w-full flex items-center border border-neutral-300 p-1.5 rounded-md">
+                      <input
+                        className="w-full focus:ring-0 focus:outline-none bg-transparent border-none text-sm p-0"
+                        type="text"
+                        placeholder="Vehicle name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
+                    {/* vehicle status */}
+                    <div className="mt-5">
+                      {/* display */}
+                      <div
+                        onClick={() => {
+                          setStatus((prev) => {
+                            return {
+                              ...prev,
+                              isOn: !prev.isOn,
+                            };
+                          });
+                        }}
+                        className="flex items-center justify-between p-1.5 border border-neutral-300 rounded-md text-sm cursor-pointer"
+                      >
+                        <span
+                          className={`${
+                            status.selected ? "text-black" : "text-neutral-500"
+                          }`}
+                        >
+                          {status.selected || "Select vehicle status"}
+                        </span>
+                        <FaChevronDown
+                          className={`text-neutral-500 transition-transform ease-in-out duration-150 ${
+                            status.isOn ? "-rotate-180" : "rotate-0"
+                          }`}
+                        />
+                      </div>
+                      {/* option */}
+                      <div
+                        className={`mt-2 overflow-hidden ${
+                          status.isOn ? "h-auto" : "h-0"
+                        }`}
+                      >
+                        <div className="p-2 bg-white shadow-lg">
+                          {status.options.map((item, index) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  setStatus((prev) => {
+                                    return {
+                                      ...prev,
+                                      selected: item.text,
+                                      isOn: false,
+                                    };
+                                  });
+                                }}
+                                key={item.text}
+                                className="border-b border-neutral-200 p-0.5 cursor-pointer hover:border-neutral-400 hover:bg-neutral-100 px-1.5 transition-colors ease-in-out duration-150"
+                              >
+                                <span>{item.text}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    {/* button */}
+                    <div>
+                      {isNewVehicleUploading ? (
+                        <div className="w-[28px] aspect-square rounded-full border-4 border-green-600 border-r-transparent animate-spin" />
+                      ) : (
+                        <button
+                          onClick={formSubmitHandler}
+                          className="mt-3 text-sm px-3.5 py-1.5 rounded-md bg-green-600 text-white transition-colors ease-in-out duration-150 hover:bg-green-500"
+                        >
+                          Add New Vehicle
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </>
       ) : (
         <></>
       )}
-      {/* delete post item pop up */}
-      <div className={`fixed left-0 top-0 w-screen h-screen bg-black/35 z-50 ${isDeletePost ? 'scale-100' : 'scale-0'}`}>
-        {/* confirm screen */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-sm p-5">
-        {
-          isPostDeleting 
-          ?
-          <div>
-            <p>Post Deleting...</p>
-          </div>
-          :
-          <>
-          {/* icon */}
-          <div className="flex items-center justify-center mb-1.5">
-            <div className="w-[24px] aspect-square rounded-full border border-red-500 flex items-center justify-center text-red-500 bg-red-100">
-              <IoIosWarning />
+      {/* update vehicle */}
+      {isUpdateVehicle && (
+        <div className="fixed left-0 top-0 w-screen h-screen z-50 bg-black bg-opacity-20">
+          <div className="min-w-96 bg-white shadow-lg rounded-lg p-5 left-1/2 -translate-x-1/2 top-[15%] absolute">
+            <header className="flex items-center justify-between">
+              {/* left */}
+              <div>
+                <h3 className="text-green-600 font-medium">Update Vehicle</h3>
+              </div>
+              {/* right */}
+              <div>
+                <button
+                  onClick={() => {
+                    setName("");
+                    setUpdateFile(null);
+                    setUpdateName("");
+                    setStatus((prev) => {
+                      return {
+                        ...prev,
+                        isOn: false,
+                        selected: "",
+                      };
+                    });
+                    setIsUpdateVehicle(null);
+                  }}
+                  className="w-[20px] aspect-square rounded-md bg-red-100 flex items-center justify-center text-red-600 transition-colors ease-in-out duration-150 hover:bg-red-200"
+                >
+                  <IoMdClose />
+                </button>
+              </div>
+            </header>
+            {/* inputs */}
+            <div className="mt-4">
+              {/* vehicle profile */}
+              <div>
+                <input
+                  onChange={(e) => {
+                    setUpdateFile(e.target.files?.[0]);
+                  }}
+                  type="file"
+                  id="vehicle-photo"
+                  accept="image/*"
+                  hidden
+                />
+                <label
+                  htmlFor="vehicle-photo"
+                  className="w-max flex items-center gap-x-1.5"
+                >
+                  <div className="w-[50px] aspect-square rounded-full overflow-hidden bg-neutral-300 cursor-pointer text-neutral-600 flex items-center justify-center text-3xl">
+                    {/* icon */}
+                    {updateFile ? (
+                      <img
+                        className="w-full h-full object-center object-cover"
+                        src={URL.createObjectURL(updateFile)}
+                      />
+                    ) : (
+                      <img
+                        className="w-full h-full object-center object-cover"
+                        src={`${BASE_URI}/${isUpdateVehicle.image}`}
+                      />
+                    )}
+                  </div>
+                  <div className="text-neutral-500 text-sm">
+                    <div>
+                      <p>{updateName || isUpdateVehicle.name}</p>
+                      <p className="text-xs text-neutral-500 mt-[-2px]">
+                        {updateFile && <>{updateFile.size / 1000}kb</>}
+                        {/* {file.size / 1000}kb */}
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              {/* vehicle name */}
+              <div className="mt-3 w-full flex items-center border border-neutral-300 p-1.5 rounded-md">
+                <input
+                  className="w-full focus:ring-0 focus:outline-none bg-transparent border-none text-sm p-0"
+                  type="text"
+                  placeholder="Vehicle name"
+                  value={updateName}
+                  onChange={(e) => setUpdateName(e.target.value)}
+                />
+              </div>
+              {/* vehicle status */}
+              <div className="mt-5">
+                {/* display */}
+                <div
+                  onClick={() => {
+                    setUpdateStatus((prev) => {
+                      return {
+                        ...prev,
+                        isOn: !prev.isOn,
+                      };
+                    });
+                  }}
+                  className="flex items-center justify-between p-1.5 border border-neutral-300 rounded-md text-sm cursor-pointer"
+                >
+                  <span
+                    className={`${
+                      updateStatus.selected ? "text-black" : "text-neutral-500"
+                    }`}
+                  >
+                    {updateStatus.selected}
+                  </span>
+                  <FaChevronDown
+                    className={`text-neutral-500 transition-transform ease-in-out duration-150 ${
+                      status.isOn ? "-rotate-180" : "rotate-0"
+                    }`}
+                  />
+                </div>
+                {/* option */}
+                <div
+                  className={`mt-2 overflow-hidden ${
+                    updateStatus.isOn ? "h-auto" : "h-0"
+                  }`}
+                >
+                  <div className="p-2 bg-white shadow-lg">
+                    {updateStatus.options.map((item, index) => {
+                      return (
+                        <div
+                          onClick={() => {
+                            setUpdateStatus((prev) => {
+                              return {
+                                ...prev,
+                                selected: item.text,
+                                isOn: false,
+                              };
+                            });
+                          }}
+                          key={item.text}
+                          className="border-b border-neutral-200 p-0.5 cursor-pointer hover:border-neutral-400 hover:bg-neutral-100 px-1.5 transition-colors ease-in-out duration-150"
+                        >
+                          <span>{item.text}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              {/* button */}
+              <div>
+                {!true ? (
+                  <div className="w-[28px] aspect-square rounded-full border-4 border-green-600 border-r-transparent animate-spin" />
+                ) : (
+                  <button
+                    onClick={updateVehicleFormHandler}
+                    className="mt-3 text-sm px-3.5 py-1.5 rounded-md bg-green-600 text-white transition-colors ease-in-out duration-150 hover:bg-green-500"
+                  >
+                    Update vehicle
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-          {/* text */}
-          <div className="text-center">
-            <p className="text-gray-700">
-              Are you sure to delete this post ?
-            </p>
-            <p className="text-sm text-red-500 italic">Remember this action is undone.</p>
-          </div>
-          {/* buttons */}
-          <div className="flex items-center justify-evenly mt-3">
+        </div>
+      )}
+      {/* delete vehicle item pop up */}
+      <div
+        className={`fixed left-0 top-0 w-screen h-screen bg-black/35 z-50 ${
+          isDeleteVehicle ? "scale-100" : "scale-0"
+        }`}
+      >
+        {/* confirm screen */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-sm p-5">
+          {isVehicleDeleting ? (
+            <div>
+              <p>Vehicle Deleting...</p>
+            </div>
+          ) : (
+            <>
+              {/* icon */}
+              <div className="flex items-center justify-center mb-1.5">
+                <div className="w-[24px] aspect-square rounded-full border border-red-500 flex items-center justify-center text-red-500 bg-red-100">
+                  <IoIosWarning />
+                </div>
+              </div>
+              {/* text */}
+              <div className="text-center">
+                <p className="text-gray-700">
+                  Are you sure to delete this vehicle ?
+                </p>
+                <p className="text-sm text-red-500 italic">
+                  Remember this action is undone.
+                </p>
+              </div>
+              {/* buttons */}
+              <div className="flex items-center justify-evenly mt-3">
+                <button
+                  className="px-3 py-0.5 rounded-sm text-sm bg-gray-500 text-white transition-colors ease-in-out duration-150 hover:bg-gray-400"
+                  onClick={() => {
+                    setIsDeleteVehicle(null);
+                  }}
+                >
+                  cancel
+                </button>
 
-            
-
-            <button className="px-3 py-0.5 rounded-sm text-sm bg-gray-500 text-white transition-colors ease-in-out duration-150 hover:bg-gray-400" onClick={()=>{
-              setIsDeletePost(null)
-            }}>cancel</button>
-
-            <button className="px-3 py-0.5 rounded-sm text-sm bg-red-500 text-white transition-colors ease-in-out duration-150 hover:bg-red-400" onClick={()=>{
-              dispatch(deletePost(isDeletePost?._id))
-            }}>delete</button>
-
-          </div>
-          </>
-        }
+                <button
+                  className="px-3 py-0.5 rounded-sm text-sm bg-red-500 text-white transition-colors ease-in-out duration-150 hover:bg-red-400"
+                  onClick={() => {
+                    dispatch(deleteVehicle(isDeleteVehicle?._id));
+                  }}
+                >
+                  delete
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

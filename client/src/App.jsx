@@ -25,9 +25,9 @@ import PagesNotFound from "./pages/PagesNotFound";
 
 // slices
 // user
-import { getAllUsers, addNewUser, userSelector } from "./features/users/users.slice";
-// posts
-import {getAllPosts,addNewPostEvent, deletePostEvent} from './features/posts/posts.slice'
+import { getAllUsers, addNewUser } from "./features/users/users.slice";
+// vehicles
+import {getAllVehicles,addNewVehicleEvent,updateVehicleEvent,deleteVehicleEvent} from './features/vehicles/vehicles.slice'
 
 const App = () => {
   // dispatch
@@ -35,10 +35,6 @@ const App = () => {
   // location
   const location = useLocation();
 
-  // states from slices
-  const user = useSelector(userSelector)
-
-  console.log(user, "++++++++")
 
   // use effects
   useEffect(() => {
@@ -54,22 +50,29 @@ const App = () => {
     });
   }, []);
 
-  // get all posts
+  
+  // get all vehicles
   useEffect(()=>{
-    dispatch(getAllPosts())
+    dispatch(getAllVehicles())
   },[])
 
-  // new post
+  // new vehicle
   useEffect(()=>{
-    SOCKET.on('addNewPostEvent',data=>{
-      dispatch(addNewPostEvent(data))
+    SOCKET.on('addNewVehicleEvent',data=>{
+      dispatch(addNewVehicleEvent(data))
+    })
+  },[])
+  // update vehicle
+  useEffect(()=>{
+    SOCKET.on('updateVehicleEvent',data=>{
+      dispatch(updateVehicleEvent(data))
     })
   },[])
 
-  // delete post
+  // delete vehicle
   useEffect(()=>{
-    SOCKET.on('deletePostEvent', _id => {
-      dispatch(deletePostEvent(_id))
+    SOCKET.on('deleteVehicleEvent', _id => {
+      dispatch(deleteVehicleEvent(_id))
     })
   },[])
 
