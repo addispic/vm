@@ -196,10 +196,10 @@ const Home = () => {
   }, [isVehicleUpdating]);
 
   // filter by name handler
-  const filterByNameHandler = (e) => {
-    if (e.target.value?.trim()) {
+  const filterByNameHandler = () => {
+    if (nameFilter) {
       let filteredVehicles = vehicles.filter((vi) =>
-        vi.name?.startsWith(e.target.value)
+        vi.name?.startsWith(nameFilter)
       );
       console.log(filteredVehicles);
       setLocalVehicles(filteredVehicles);
@@ -219,7 +219,11 @@ const Home = () => {
               className="w-full focus:ring-0 focus:outline-none border-none bg-transparent"
               placeholder="Search vehicle by name"
               type="text"
-              onChange={filterByNameHandler}
+              value={nameFilter}
+              onChange={(e) => {
+                setNameFilter(e.target.value);
+                filterByNameHandler();
+              }}
             />
             <CiSearch className="text-xl" />
           </div>
@@ -229,7 +233,9 @@ const Home = () => {
           <div className="flex items-center gap-x-1.5">
             <div className="flex items-center gap-x-1">
               <CiFilter />
-              <span className="text-sm text-neutral-500 hidden md:inline-block">Filter</span>
+              <span className="text-sm text-neutral-500 hidden md:inline-block">
+                Filter
+              </span>
             </div>
             <div className="relative">
               {/* span */}
@@ -322,11 +328,16 @@ const Home = () => {
                         <div>
                           {/* name */}
                           <p>{vehicleItem.name}</p>
-                          <p className="md:hidden text-sm text-orange-600">Status: {vehicleItem.status}</p>
-                          <span className="sm:hidden text-neutral-500 ml-1.5 text-xs">updated:{formatDistanceToNow(
-                            new Date(vehicleItem.updatedAt),
-                            { addSuffix: true }
-                          )}</span>
+                          <p className="md:hidden text-sm text-orange-600">
+                            Status: {vehicleItem.status}
+                          </p>
+                          <span className="sm:hidden text-neutral-500 ml-1.5 text-xs">
+                            updated:
+                            {formatDistanceToNow(
+                              new Date(vehicleItem.updatedAt),
+                              { addSuffix: true }
+                            )}
+                          </span>
                           {/* author detail */}
                           <div className="text-xs">
                             <p>
@@ -340,7 +351,6 @@ const Home = () => {
                                   { addSuffix: true }
                                 )}
                               </span>
-                              
                             </p>
                           </div>
                         </div>
