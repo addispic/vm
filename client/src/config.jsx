@@ -3,4 +3,5 @@ import {io} from 'socket.io-client'
 export const BASE_URI = "https://vm-backend-8e3r.onrender.com";
 
 // socket
-export const SOCKET = io('ws://vm-backend-8e3r.onrender.com');
+// export const SOCKET = io('ws://vm-backend-8e3r.onrender.com');
+export const SOCKET = io('https://vm-backend-8e3r.onrender.com');
