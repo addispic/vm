@@ -21,6 +21,8 @@ import { CiEdit } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
 // filter
 import { CiFilter } from "react-icons/ci";
+// add new
+import { FaCircleUser } from "react-icons/fa6";
 
 // config
 import { BASE_URI } from "../../config";
@@ -225,6 +227,8 @@ const Home = () => {
             <CiSearch className="text-xl" />
           </div>
         </div>
+        <div className="flex items-center gap-x-1.5">
+
         {/* filter */}
         <div className="flex items-center gap-x-1.5">
           <div className="flex items-center gap-x-1">
@@ -276,6 +280,15 @@ const Home = () => {
               </div>
             )}
           </div>
+        </div>
+        {/* add new */}
+        <div>
+          <button onClick={() => {
+                setIsNewOn(true);
+              }} className="w-[24px] aspect-square rounded-sm flex items-center justify-center bg-neutral-200 text-neutral-400 hover:bg-neutral-300 hover:text-neutral-600">
+            <IoMdAdd   />
+          </button>
+        </div>
         </div>
       </header>
       {/* vehicles content */}

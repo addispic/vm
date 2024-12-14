@@ -1,6 +1,18 @@
-import React, { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useLocation, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
+// icons
+import { MdOutlineSettingsSuggest } from "react-icons/md";
+import { IoExitOutline } from "react-icons/io5";
+import { CiLogin } from "react-icons/ci";
+import { FaCarAlt } from "react-icons/fa";
+import { CiHome } from "react-icons/ci";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { PiNotebook } from "react-icons/pi";
+import { HiOutlineCurrencyDollar } from "react-icons/hi2";
+import { LuListTodo } from "react-icons/lu";
+import { RiUser6Line } from "react-icons/ri";
 
 // config
 // socket
@@ -25,7 +37,7 @@ import PagesNotFound from "./pages/PagesNotFound";
 
 // slices
 // user
-import { getAllUsers, addNewUser } from "./features/users/users.slice";
+import { getAllUsers, addNewUser, userSelector } from "./features/users/users.slice";
 // vehicles
 import {getAllVehicles,addNewVehicleEvent,updateVehicleEvent,deleteVehicleEvent} from './features/vehicles/vehicles.slice'
 
@@ -34,6 +46,33 @@ const App = () => {
   const dispatch = useDispatch();
   // location
   const location = useLocation();
+
+  // user
+  const user = useSelector(userSelector)
+
+  // menu list
+  const [menu,setMenu] = useState([
+    {
+      icon: CiHome,
+      text: "Home",
+    },
+    {
+      icon: LuLayoutDashboard,
+      text: "Dashboard",
+    },
+    {
+      icon: PiNotebook,
+      text: "Blogs",
+    },
+    {
+      icon: HiOutlineCurrencyDollar,
+      text: "Balance",
+    },
+    {
+      icon: LuListTodo,
+      text: "Tasks",
+    },
+  ])
 
 
   // use effects
@@ -84,7 +123,58 @@ const App = () => {
       {/* routes */}
       <div className="h-[93vh] overflow-y-auto flex gap-x-5">
         {/* left side nav */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full bg-red-300">left side nav</div>}
+        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[20%] h-full px-3 py-1.5">
+          {/* left list */}
+          <div className="w-full h-full bg-neutral-200 rounded-md overflow-hidden p-5 flex flex-col justify-between">
+            {/* menu list */}
+            <div>
+              <div className="text-left font-black text-neutral-500 mb-3 flex items-center gap-x-1.5">
+                <div className="w-[24px] aspect-square rounded-full border border-neutral-500 flex items-center justify-center text-sm">
+                  < FaCarAlt/>
+                </div>
+                <span>VM</span>
+              </div>
+              {
+                menu.map((item)=>{
+                  return (
+                    <div className="mt-3 w-full bg-neutral-100 p-1.5 overflow-hidden flex items-center gap-x-1.5 cursor-pointer">
+                <item.icon className="text-xl" />
+                <span className="text-sm text-neutral-600">{item.text}</span>
+              </div>
+                  )
+                })
+              }
+            </div>
+            {/* controllers */}
+            <div>
+              {
+                user 
+                ?
+                <>
+                {/* settings */}
+              <div className="w-full bg-neutral-50 p-1.5 rounded-md overflow-hidden flex items-center gap-x-1.5 cursor-pointer">
+                <MdOutlineSettingsSuggest className="text-xl" />
+                <span className="text-sm text-neutral-600">Settings</span>
+              </div>
+              {/* logout */}
+              <div className="mt-3 w-full bg-neutral-50 p-1.5 rounded-md overflow-hidden flex items-center gap-x-1.5 cursor-pointer">
+                <IoExitOutline className="text-xl" />
+                <span className="text-sm text-neutral-600">Logout</span>
+              </div>
+                </>
+                :
+                <>
+                {/* logout */}
+              <NavLink to={"/user/login"} className="mt-3 w-full bg-neutral-50 p-1.5 rounded-md overflow-hidden flex items-center gap-x-1.5 cursor-pointer">
+                <CiLogin className="text-xl" />
+                <span className="text-sm text-neutral-600">Login</span>
+              </NavLink>
+              </>
+              }
+              
+            </div>
+          </div>
+          </div>}
         
         <div className="flex-grow">
           <Routes>
@@ -105,7 +195,29 @@ const App = () => {
           </Routes>
         </div>
         {/* right side components */}
-        {location?.pathname?.split("/")[1] !== "user" && <div className="min-w-[30%] h-full bg-gray-300">right side nav</div>}
+        {location?.pathname?.split("/")[1] !== "user" && <div className="max-w-72 h-full px-3 py-1.5">
+          {/* latest */}
+          <div className="w-full h-full bg-neutral-100 p-5 rounded-md overflow-hidden">
+            <h3 className="text-green-500 font-medium">Latest News</h3>
+            {/* lists */}
+            <div className="mt-3">
+              {[...Array(3)].map((item,index)=>{
+                return (
+                  <div className="mb-3">
+                    <div className="bg-white p-1.5 rounded-md shadow-md my-1.5 text-sm">
+                      <p>Adipisicing elit. Corporis perspiciatis adipisci velit harum.</p>
+                    </div>
+                    <div className="flex items-center gap-x-1.5 text-neutral-500 text-sm">
+                      <RiUser6Line/>
+                      <div>by Addis</div>
+                      <div>3 minutes agor</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          </div>}
         
       </div>
     </div>
