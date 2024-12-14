@@ -57,6 +57,10 @@ const Home = () => {
   const isVehicleUpdating = useSelector(isVehicleUpdatingSelector);
 
   // local
+  // local vehicles
+  const [localVehicles,setLocalVehicles] = useState(vehicles)
+  // name filter
+  const [nameFilter,setNameFilter] = useState("")
   // is new on
   const [isNewOn, setIsNewOn] = useState(false);
   // file
@@ -191,6 +195,20 @@ const Home = () => {
     setIsUpdateVehicle(null);
   }, [isVehicleUpdating]);
 
+  // filter by name handler
+  const filterByNameHandler = (e) => {
+    if(e.target.value?.trim()){
+      let filteredVehicles = vehicles.filter(vi => vi.name?.startsWith(e.target.value)) 
+      console.log(filteredVehicles)
+      setLocalVehicles(filteredVehicles)
+    }else{
+      setLocalVehicles(vehicles)
+    }
+    
+  }
+
+  console.log("+++",localVehicles,vehicles, "+++")
+
   return (
     <div className="h-[93vh] flex flex-col">
       {/* header */}
@@ -201,7 +219,8 @@ const Home = () => {
             <input
               className="w-full focus:ring-0 focus:outline-none border-none bg-transparent"
               placeholder="Search vehicle by name"
-              type="text"
+              type="text" 
+              onChange={filterByNameHandler}
             />
             <CiSearch className="text-xl" />
           </div>
@@ -265,9 +284,9 @@ const Home = () => {
           user ? "max-h-[88vh]" : "max-h-[93vh]"
         }`}
       >
-        {vehicles?.length > 0 ? (
+        {localVehicles?.length > 0 ? (
           <>
-            {vehicles.map((vehicleItem) => {
+            {localVehicles.map((vehicleItem) => {
               return (
                 <div
                   key={vehicleItem._id}
@@ -376,7 +395,7 @@ const Home = () => {
             })}
           </>
         ) : (
-          <>No Vehicles Yet</>
+          <>No Result Yet</>
         )}
       </div>
 
