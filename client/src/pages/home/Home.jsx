@@ -89,6 +89,28 @@ const Home = () => {
     selected: "",
     isOn: false,
   });
+  // status
+  const [filter, setFilter] = useState({
+    options: [
+      {
+        text: "Available",
+      },
+      {
+        text: "In Production",
+      },
+      {
+        text: "In Service",
+      },
+      {
+        text: "Retired",
+      },
+      {
+        text: "Sold",
+      },
+    ],
+    selected: "",
+    isOn: false,
+  });
   // update status
   const [updateStatus, setUpdateStatus] = useState({
     options: [
@@ -192,10 +214,48 @@ const Home = () => {
           </div>
           <div className="relative">
             {/* span */}
-            <div className="cursor-pointer flex items-center gap-x-3 border border-neutral-300 px-3 py-1 text-sm rounded-md">
-              <span>Select</span>
-              <FaChevronDown />
+            <div
+              onClick={() => {
+                setFilter((prev) => {
+                  return {
+                    ...prev,
+                    isOn: !prev.isOn,
+                  };
+                });
+              }}
+              className="cursor-pointer flex items-center gap-x-3 border border-neutral-300 px-3 py-1 text-sm rounded-md"
+            >
+              <span>{filter.selected || "select"}</span>
+              <FaChevronDown
+                className={`transition-transform text-sm text-neutral-500 ease-in-out duration-150 ${
+                  filter.isOn ? "-rotate-180" : "rotate-0"
+                }`}
+              />
             </div>
+            {/* pop up */}
+            {filter.isOn && (
+              <div className="absolute right-0 top-[105%] bg-white p-1.5 rounded-md shadow-lg z-50 whitespace-nowrap">
+                {filter.options.map((item) => {
+                  return (
+                    <div
+                      onClick={() => {
+                        setFilter((prev) => {
+                          return {
+                            ...prev,
+                            selected: item.text,
+                            isOn: false,
+                          };
+                        });
+                      }}
+                      key={item.text}
+                      className="cursor-pointer border-b border-neutral-200 hover:bg-neutral-100 p-0.5"
+                    >
+                      <span>{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </header>
