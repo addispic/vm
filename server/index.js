@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const path = require('path')
 
 // socket
 const { server, app } = require("./api/socket/socket");
@@ -31,6 +32,22 @@ app.use("/api/vehicle", require("./api/routes/vehicle.routes"));
 
 // public
 app.use("/public", express.static("public"));
+
+// -------------------------------- deployment
+const __dirname1 = path.resolve()
+console.log(__dirname1, "______")
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname1,'..','/client/dist')))
+  app.get("*",(req,res)=>{
+    return res.sendFile(path.resolve(__dirname1,"..","client","dist","index.html"))
+  })
+}else{
+  app.get("/",(req,res)=>{
+    return res.send("API is running successfully")
+  })
+}
+// -------------------------------- deployment
+
 
 // listen
 server.listen(PORT, async () => {
