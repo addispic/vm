@@ -22,10 +22,10 @@ export const getAllVehicles = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get("/api/vehicle/get-all-vehicles");
-      console.log("GET ALL VEHICLES",response.data)
+      console.log("GET ALL VEHICLES", response.data);
       return response.data;
     } catch (err) {
-      console.log("GET ALL VEHICLES ERROR",err.response.data)
+      console.log("GET ALL VEHICLES ERROR", err.response.data);
       return err.response.data;
     }
   }
@@ -36,11 +36,16 @@ export const addNewVehicle = createAsyncThunk(
   "vehicles/addNewVehicle",
   async (data) => {
     try {
-      const response = await axios.post("/api/vehicle/new-vehicle", data);
-      console.log("ADD NEW VEHICLE RESPONSE:",response.data)
+      const response = await axios.post("/api/vehicle/new-vehicle", data, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Optional, handled by Axios
+          Authorization: `Bearer ${token}`, // Include JWT in the Authorization header
+        },
+      });
+      console.log("ADD NEW VEHICLE RESPONSE:", response.data);
       return response.data;
     } catch (err) {
-      console.log("ADD NEW VEHICLE ERROR:",err.response.data)
+      console.log("ADD NEW VEHICLE ERROR:", err.response.data);
       return err.response.data;
     }
   }
