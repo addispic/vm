@@ -16,11 +16,11 @@ const PORT = process.env.PORT || 5050;
 // settings
 app.use(
   cors({
-    origin: "*",
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: true,
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
