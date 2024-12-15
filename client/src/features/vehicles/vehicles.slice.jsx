@@ -38,15 +38,15 @@ export const addNewVehicle = createAsyncThunk(
     try {
       const response = await axios.post("/api/vehicle/new-vehicle", data, {
         headers: {
-          "Content-Type": "multipart/form-data", // Optional, handled by Axios
-          Authorization: `Bearer ${token}`, // Include JWT in the Authorization header
+          "Content-Type": "multipart/form-data", 
+          Authorization: `Bearer ${token}`, 
         },
       });
       console.log("ADD NEW VEHICLE RESPONSE:", response.data);
-      return response.data;
+      // return response.data;
     } catch (err) {
       console.log("ADD NEW VEHICLE ERROR:", err.response.data);
-      return err.response.data;
+      // return err.response.data;
     }
   }
 );
@@ -115,7 +115,7 @@ const vehiclesSlice = createSlice({
       // pending
       .addCase(getAllVehicles.pending, (state) => {
         state.isVehicleLoading = true;
-        console.log("PENDING-GET-POSTS");
+        console.log("PENDING-GET-VEHICLES");
       })
       // fulfilled
       .addCase(getAllVehicles.fulfilled, (state, action) => {
@@ -127,7 +127,7 @@ const vehiclesSlice = createSlice({
       // rejected
       .addCase(getAllVehicles.rejected, (state) => {
         state.isVehicleLoading = false;
-        console.log("REJECTED-GET-POSTS");
+        console.log("REJECTED-GET-VEHICLES");
       })
 
       // new vehicles
@@ -148,7 +148,7 @@ const vehiclesSlice = createSlice({
       .addCase(addNewVehicle.rejected, (state) => {
         state.isNewVehicleUploading = false;
         state.isVehicleUploadingDone = true;
-        console.log("ADD-NEW-POST-REJECTED");
+        console.log("ADD-NEW-VEHICLE-REJECTED");
       })
       // updating vehicle
       // pending
@@ -181,7 +181,7 @@ const vehiclesSlice = createSlice({
       // rejected
       .addCase(deleteVehicle.rejected, (state) => {
         state.isVehicleDeleting = false;
-        console.log("DELETE-POST-REJECTED");
+        console.log("DELETE-VEHICLE-REJECTED");
       });
   },
 });
