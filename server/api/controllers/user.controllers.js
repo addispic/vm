@@ -10,10 +10,10 @@ const { MAX_AGE, errorHandler, generateToken } = require("../utils/user.utils");
 // get all users
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select({_id: 1,username: 1,email: 1});
-    return res.status(200).json({users})
+    const users = await User.find().select({ _id: 1, username: 1, email: 1 });
+    return res.status(200).json({ users });
   } catch (err) {
-    return res.status(400).json({error: 'get all users failed'});
+    return res.status(400).json({ error: "get all users failed" });
   }
 };
 
@@ -33,7 +33,11 @@ const userRegister = async (req, res) => {
     });
     return res
       .status(200)
-      .json({ _id: newUser._id, username: newUser.username,email: newUser?.email });
+      .json({
+        _id: newUser._id,
+        username: newUser.username,
+        email: newUser?.email,
+      });
   } catch (err) {
     console.log(err);
     const errors = errorHandler(err);
@@ -76,11 +80,17 @@ const userLogin = async (req, res) => {
     res.cookie("token", token, {
       maxAge: MAX_AGE * 1000,
       httpOnly: true,
-      secure: true,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
-    return res.status(200).json({ _id: isUserExist?._id,username: isUserExist?.username,email: isUserExist?.email });
+    return res
+      .status(200)
+      .json({
+        _id: isUserExist?._id,
+        username: isUserExist?.username,
+        email: isUserExist?.email,
+      });
   } catch (err) {
     const errors = errorHandler(err);
     return res.status(400).json({ errors });
@@ -88,14 +98,14 @@ const userLogin = async (req, res) => {
 };
 
 // logout
-const userLogout = (req,res) => {
-    try{
-        res.cookie('token',"",{maxAge: 1});
-        return res.status(200).json({message: 'user logged out',})
-    }catch(err){
-        return res.status(400).json({error: 'user logout failed'})
-    }
-}
+const userLogout = (req, res) => {
+  try {
+    res.cookie("token", "", { maxAge: 1 });
+    return res.status(200).json({ message: "user logged out" });
+  } catch (err) {
+    return res.status(400).json({ error: "user logout failed" });
+  }
+};
 
 // auth checker
 const authChecker = (req, res) => {
