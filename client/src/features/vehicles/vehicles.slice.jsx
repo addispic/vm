@@ -34,7 +34,11 @@ export const addNewVehicle = createAsyncThunk(
   "vehicles/addNewVehicle",
   async (data) => {
     try {
-      const response = await axios.post("/api/vehicle/new-vehicle", data);
+      const response = await axios.post("/api/vehicle/new-vehicle", data, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Optional: Axios sets this automatically
+        },
+      });
       return response.data;
     } catch (err) {
       return err.response.data;
@@ -87,8 +91,10 @@ const vehiclesSlice = createSlice({
     // delete vehicle
     updateVehicleEvent: (state, action) => {
       console.log(action.payload);
-      let index = state.vehicles.findIndex(vi => vi._id === action.payload?._id) 
-      state.vehicles[index] = action.payload
+      let index = state.vehicles.findIndex(
+        (vi) => vi._id === action.payload?._id
+      );
+      state.vehicles[index] = action.payload;
     },
     // delete vehicle
     deleteVehicleEvent: (state, action) => {
