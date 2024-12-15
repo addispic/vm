@@ -22,8 +22,10 @@ export const getAllVehicles = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get("/api/vehicle/get-all-vehicles");
+      console.log("GET ALL VEHICLES",response.data)
       return response.data;
     } catch (err) {
+      console.log("GET ALL VEHICLES ERROR",err.response.data)
       return err.response.data;
     }
   }
