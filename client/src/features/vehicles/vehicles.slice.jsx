@@ -36,17 +36,12 @@ export const addNewVehicle = createAsyncThunk(
   "vehicles/addNewVehicle",
   async (data) => {
     try {
-      const response = await axios.post("/api/vehicle/new-vehicle", data, {
-        headers: {
-          "Content-Type": "multipart/form-data", 
-          Authorization: `Bearer ${token}`, 
-        },
-      });
+      const response = await axios.post("/api/vehicle/new-vehicle", data);
       console.log("ADD NEW VEHICLE RESPONSE:", response.data);
-      // return response.data;
+      return response.data;
     } catch (err) {
       console.log("ADD NEW VEHICLE ERROR:", err.response.data);
-      // return err.response.data;
+      return err.response.data;
     }
   }
 );
