@@ -14,15 +14,16 @@ const dbConnectionHandler = require("./api/db/db.connection");
 const PORT = process.env.PORT || 5050;
 
 // settings
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(
   cors({
     origin: true,
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 // routes
 // user
