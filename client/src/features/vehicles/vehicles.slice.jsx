@@ -22,10 +22,8 @@ export const getAllVehicles = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get("/api/vehicle/get-all-vehicles");
-      console.log("GET ALL VEHICLES", response.data);
       return response.data;
     } catch (err) {
-      console.log("GET ALL VEHICLES ERROR", err.response.data);
       return err.response.data;
     }
   }
@@ -37,10 +35,8 @@ export const addNewVehicle = createAsyncThunk(
   async (data) => {
     try {
       const response = await axios.post("/api/vehicle/new-vehicle", data);
-      console.log("ADD NEW VEHICLE RESPONSE:", response.data);
       return response.data;
     } catch (err) {
-      console.log("ADD NEW VEHICLE ERROR:", err.response.data);
       return err.response.data;
     }
   }
@@ -90,7 +86,6 @@ const vehiclesSlice = createSlice({
     },
     // delete vehicle
     updateVehicleEvent: (state, action) => {
-      console.log(action.payload);
       let index = state.vehicles.findIndex(
         (vi) => vi._id === action.payload?._id
       );
@@ -110,7 +105,7 @@ const vehiclesSlice = createSlice({
       // pending
       .addCase(getAllVehicles.pending, (state) => {
         state.isVehicleLoading = true;
-        console.log("PENDING-GET-VEHICLES");
+        // console.log("PENDING-GET-VEHICLES");
       })
       // fulfilled
       .addCase(getAllVehicles.fulfilled, (state, action) => {
@@ -122,7 +117,7 @@ const vehiclesSlice = createSlice({
       // rejected
       .addCase(getAllVehicles.rejected, (state) => {
         state.isVehicleLoading = false;
-        console.log("REJECTED-GET-VEHICLES");
+        // console.log("REJECTED-GET-VEHICLES");
       })
 
       // new vehicles
@@ -143,7 +138,7 @@ const vehiclesSlice = createSlice({
       .addCase(addNewVehicle.rejected, (state) => {
         state.isNewVehicleUploading = false;
         state.isVehicleUploadingDone = true;
-        console.log("ADD-NEW-VEHICLE-REJECTED");
+        // console.log("ADD-NEW-VEHICLE-REJECTED");
       })
       // updating vehicle
       // pending
@@ -176,7 +171,7 @@ const vehiclesSlice = createSlice({
       // rejected
       .addCase(deleteVehicle.rejected, (state) => {
         state.isVehicleDeleting = false;
-        console.log("DELETE-VEHICLE-REJECTED");
+        // console.log("DELETE-VEHICLE-REJECTED");
       });
   },
 });

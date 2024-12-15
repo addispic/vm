@@ -201,7 +201,6 @@ const Home = () => {
       let filteredVehicles = vehicles.filter((vi) =>
         vi.name?.startsWith(nameFilter)
       );
-      console.log(filteredVehicles);
       setLocalVehicles(filteredVehicles);
     } else {
       setLocalVehicles(vehicles);

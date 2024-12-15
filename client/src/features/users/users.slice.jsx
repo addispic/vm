@@ -3,7 +3,7 @@ import axios from "axios";
 
 // config
 // io
-import {SOCKET} from '../../config';
+import { SOCKET } from "../../config";
 
 // local user
 const localUser = JSON.parse(localStorage.getItem("user"));
@@ -18,7 +18,6 @@ const initialState = {
 
 // login
 export const login = createAsyncThunk("user/login", async (data) => {
-  console.log("Hello World");
   try {
     const response = await axios.post("/api/user/login", data);
     return response.data;
@@ -38,32 +37,32 @@ export const register = createAsyncThunk("user/register", async (data) => {
 });
 
 // get all users
-export const getAllUsers = createAsyncThunk("user/getAllUsers",async () => {
+export const getAllUsers = createAsyncThunk("user/getAllUsers", async () => {
   try {
     const response = await axios.get("/api/user/get-all-users");
-    return response.data
-  } catch (err) {
-    return err.response.data
-  }
-})
-
-// logout
-export const logout = createAsyncThunk('user/logout',async () => {
-  try {
-    const response = await axios.get('/api/user/logout');
     return response.data;
   } catch (err) {
     return err.response.data;
   }
-})
+});
+
+// logout
+export const logout = createAsyncThunk("user/logout", async () => {
+  try {
+    const response = await axios.get("/api/user/logout");
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
+});
 // users slice
 const usersSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
     // add new user
-    addNewUser: (state,action) => {
-      state.users = [action.payload,...state?.users];
+    addNewUser: (state, action) => {
+      state.users = [action.payload, ...state?.users];
     },
   },
   extraReducers: (builder) => {
@@ -79,7 +78,7 @@ const usersSlice = createSlice({
         state.isFormSubmitting = false;
         if (action.payload?._id) {
           state.user = action.payload;
-          localStorage.setItem("user",JSON.stringify(action.payload))
+          localStorage.setItem("user", JSON.stringify(action.payload));
           state.errors = null;
         }
         if (action.payload?.errors) {
@@ -89,7 +88,7 @@ const usersSlice = createSlice({
       // rejected
       .addCase(login.rejected, (state) => {
         state.isFormSubmitting = false;
-        console.log("LOGIN REJECTED");
+        // console.log("LOGIN REJECTED");
       })
       // register
       // pending
@@ -100,7 +99,7 @@ const usersSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         if (action.payload?._id) {
-          SOCKET.emit('newUserRegister',action.payload)
+          SOCKET.emit("newUserRegister", action.payload);
           state.errors = null;
           state.user = action.payload;
           localStorage.setItem("user", JSON.stringify(action.payload));
@@ -112,42 +111,42 @@ const usersSlice = createSlice({
       // rejected
       .addCase(register.rejected, (state) => {
         state.isFormSubmitting = false;
-        console.log("REGISTER REJECTED");
+        // console.log("REGISTER REJECTED");
       })
 
       // get all users
       // fulfilled
-      .addCase(getAllUsers.fulfilled, (state,action) => {
-        if(action.payload?.users){
-          state.users = action.payload?.users
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        if (action.payload?.users) {
+          state.users = action.payload?.users;
         }
       })
       // rejected
-      .addCase(getAllUsers.rejected, state => {
-        console.log("get all users rejected");
+      .addCase(getAllUsers.rejected, (state) => {
+        // console.log("get all users rejected");
       })
       // logout
       // pending
-      .addCase(logout.pending,state => {
-        state.isFormSubmitting = true
+      .addCase(logout.pending, (state) => {
+        state.isFormSubmitting = true;
       })
       // fulfilled
-      .addCase(logout.fulfilled,(state,action)=>{
-        state.isFormSubmitting = false
-        if(action.payload?.message){
+      .addCase(logout.fulfilled, (state, action) => {
+        state.isFormSubmitting = false;
+        if (action.payload?.message) {
           state.user = null;
-          localStorage.removeItem('user');
+          localStorage.removeItem("user");
         }
       })
       // rejected
-      .addCase(logout.rejected, state => {
-        state.isFormSubmitting = false
-      })
+      .addCase(logout.rejected, (state) => {
+        state.isFormSubmitting = false;
+      });
   },
 });
 
 // actions
-export const {addNewUser} = usersSlice.actions
+export const { addNewUser } = usersSlice.actions;
 
 // is form submitting
 export const isFormSubmittingSelector = (state) => state.user.user;
